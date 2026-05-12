@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Rugby Club — USA Club Rugby Directory</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --grass: #2d6a2d;
+    --grass-light: #3d8b3d;
+    --mud: #6b4c2a;
+    --chalk: #f5f0e8;
+    --stripe: #1a1a1a;
+    --accent: #e8c84a;
+    --d1: #c0392b;
+    --d2: #2980b9;
+    --d3: #27ae60;
+    --d4: #8e44ad;
+    --panel: rgba(26,26,26,0.96);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--stripe);
+    color: var(--chalk);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  header {
+    background: var(--stripe);
+    padding: 0 1.5rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--accent);
+    flex-shrink: 0;
+    z-index: 1000;
+    position: relative;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.04em;
+    color: var(--chalk);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo .ball {
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    border-radius: 50% 30% 50% 30% / 30% 50% 30% 50%;
+    display: inline-block;
+  }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .filter-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1.5px solid transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: transparent;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .filter-btn.active { color: #fff; }
+  .filter-btn[data-div="all"].active { border-color: var(--accent); color: var(--accent); }
+  .filter-btn[data-div="D1"].active { border-color: var(--d1); color: var(--d1); }
+  .filter-btn[data-div="D2"].active { border-color: var(--d2); color: var(--d2); }
+  .filter-btn[data-div="D3"].active { border-color: var(--d3); color: var(--d3); }
+  .filter-btn[data-div="D4"].active { border-color: var(--d4); color: var(--d4); }
+  .filter-btn:hover { opacity: 0.8; }
+
+  .search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-input {
+    background: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    color: var(--chalk);
+    padding: 6px 32px 6px 12px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    width: 200px;
+    outline: none;
+  }
+
+  .search-input::placeholder { color: #666; }
+  .search-input:focus { border-color: var(--accent); }
+
+  .search-icon {
+    position: absolute;
+    right: 10px;
+    color: #666;
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  #map {
+    flex: 1;
+    z-index: 1;
+  }
+
+  .sidebar {
+    width: 340px;
+    background: var(--panel);
+    border-left: 1px solid #2a2a2a;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: width 0.25s ease, border 0.25s ease;
+  }
+
+  .sidebar.hidden {
+    width: 0;
+    border-left: none;
+  }
+
+  .sidebar.hidden > * {
+    display: none;
+  }
+
+  .main { position: relative; }
+
+  .sidebar-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 600;
+    background: var(--panel);
+    border: 1px solid #333;
+    border-right: none;
+    color: var(--accent);
+    cursor: pointer;
+    padding: 12px 5px;
+    border-radius: 6px 0 0 6px;
+    font-size: 0.7rem;
+    line-height: 1;
+    transition: background 0.12s;
+    writing-mode: vertical-rl;
+    letter-spacing: 0.1em;
+    font-family: 'Bebas Neue', sans-serif;
+  }
+
+  .sidebar-toggle:hover { background: #2a2a2a; }
+
+  .sidebar-header {
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid #2a2a2a;
+  }
+
+  .sidebar-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .sidebar-count {
+    font-size: 0.78rem;
+    color: #888;
+  }
+
+  .team-list {
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .team-list::-webkit-scrollbar { width: 4px; }
+  .team-list::-webkit-scrollbar-track { background: transparent; }
+  .team-list::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 2px; }
+
+  .team-item {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid #1e1e1e;
+    cursor: pointer;
+    transition: background 0.12s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .team-item:hover { background: #222; }
+  .team-item.active { background: #232018; border-left: 3px solid var(--accent); }
+
+  .div-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .div-D1 { background: rgba(192,57,43,0.2); color: var(--d1); border: 1px solid rgba(192,57,43,0.4); }
+  .div-D2 { background: rgba(41,128,185,0.2); color: var(--d2); border: 1px solid rgba(41,128,185,0.4); }
+  .div-D3 { background: rgba(39,174,96,0.2); color: var(--d3); border: 1px solid rgba(39,174,96,0.4); }
+  .div-D4 { background: rgba(142,68,173,0.2); color: var(--d4); border: 1px solid rgba(142,68,173,0.4); }
+
+  .team-info { flex: 1; min-width: 0; }
+
+  .team-name {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--chalk);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .team-meta {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Detail panel */
+  .detail-panel {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 320px;
+    background: var(--panel);
+    border-radius: 10px;
+    border: 1px solid #333;
+    border-left: 4px solid var(--accent);
+    z-index: 500;
+    overflow: hidden;
+    display: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  }
+
+  .detail-panel.show { display: block; }
+
+  .detail-header {
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid #2a2a2a;
+  }
+
+  .detail-div {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+
+  .detail-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    color: var(--chalk);
+    line-height: 1.1;
+  }
+
+  .detail-city {
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 2px;
+  }
+
+  .detail-body { padding: 0.85rem 1.25rem; }
+
+  .detail-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+  }
+
+  .detail-label {
+    color: #888;
+    min-width: 90px;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-top: 1px;
+  }
+
+  .detail-value { color: var(--chalk); }
+
+  .detail-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 4px;
+  }
+
+  .detail-close:hover { color: var(--chalk); }
+
+  .detail-link {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 14px;
+    background: var(--accent);
+    color: var(--stripe);
+    border-radius: 5px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Legend */
+  .map-legend {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--panel);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px 14px;
+    z-index: 400;
+    font-size: 0.75rem;
+  }
+
+  .legend-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .legend-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Loading state */
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(26,26,26,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .loading-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #333;
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .no-results {
+    padding: 2rem 1.25rem;
+    text-align: center;
+    color: #666;
+    font-size: 0.85rem;
+  }
+
+  /* Leaflet popup override */
+  .leaflet-popup-content-wrapper {
+    background: var(--panel) !important;
+    border: 1px solid #333 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+  }
+  .leaflet-popup-tip { background: var(--panel) !important; }
+  .leaflet-popup-content { color: var(--chalk) !important; margin: 10px 14px !important; }
+  .popup-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.04em; }
+  .popup-meta { font-size: 0.78rem; color: #aaa; margin-top: 2px; }
+  .popup-open { 
+    display: inline-block; margin-top: 6px; padding: 4px 10px;
+    background: var(--accent); color: var(--stripe); border-radius: 4px;
+    font-size: 0.72rem; font-weight: 700; cursor: pointer; border: none;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="ball"></span>
+    Find Your Rugby Club
+  </div>
+  <div class="filters">
+    <button class="filter-btn active" data-div="all">All</button>
+    <button class="filter-btn" data-div="D1">D1</button>
+    <button class="filter-btn" data-div="D2">D2</button>
+    <button class="filter-btn" data-div="D3">D3</button>
+    <button class="filter-btn" data-div="D4">D4</button>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" type="text" placeholder="Search clubs or city…" id="searchInput">
+    <span class="search-icon">⌕</span>
+  </div>
+</header>
+
+<div class="main">
+  <div id="mapWrapper" style="position:relative; flex:1; display:flex;">
+    <div id="map"></div>
+    <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">◀ Directory</button>
+
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading clubs…</div>
+    </div>
+
+    <div class="map-legend">
+      <div class="legend-title">Division</div>
+      <div class="legend-row"><div class="legend-dot" style="background:var(--d1)"></div> D1 — Premier</div>
+      <div class="legend-row"><div class="legend-dot" style="background:var(--d2)"></div> D2 — Championship</div>
+      <div class="legend-row"><div class="legend-dot" style="background:var(--d3)"></div> D3 — Community</div>
+      <div class="legend-row"><div class="legend-dot" style="background:var(--d4)"></div> D4 — Developmental</div>
+    </div>
+
+    <div class="detail-panel" id="detailPanel">
+      <button class="detail-close" id="detailClose">✕</button>
+      <div class="detail-header">
+        <div class="detail-div" id="detailDiv"></div>
+        <div class="detail-name" id="detailName"></div>
+        <div class="detail-city" id="detailCity"></div>
+      </div>
+      <div class="detail-body" id="detailBody"></div>
+    </div>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">Club Directory</div>
+      <div class="sidebar-count" id="sidebarCount">Loading…</div>
+    </div>
+    <div class="team-list" id="teamList"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ============================================================
+// CONFIGURATION — point this to your Google Sheet CSV URL
+// ============================================================
+// HOW TO GET YOUR GOOGLE SHEET URL:
+//   1. Open your Google Sheet
+//   2. File → Share → Publish to web
+//   3. Choose the sheet tab, select "Comma-separated values (.csv)"
+//   4. Click Publish and copy the URL
+//   5. Paste it below replacing the SHEET_CSV_URL value
+
+const SHEET_CSV_URL = 'YOUR_GOOGLE_SHEET_CSV_URL_HERE';
+
+// For demo/testing — remove this and use your real URL above
+const DEMO_DATA = [
+  { name: "Chicago Griffins RFC", division: "D1", city: "Chicago", state: "IL", lat: 41.8781, lng: -87.6298, homeField: "Montrose Harbor", practiceLocation: "Montrose Harbor, Mon/Wed 6:30pm", contact: "info@chicagogriffins.org", website: "chicagogriffins.org", founded: "1972", conference: "Midwest" },
+  { name: "New York Athletic Club RFC", division: "D1", city: "New York", state: "NY", lat: 40.7128, lng: -74.0060, homeField: "Randall's Island", practiceLocation: "Randall's Island, Tue/Thu 7pm", contact: "rugby@nyac.com", website: "nyac.com/rugby", founded: "1968", conference: "Northeast" },
+  { name: "Life West Gladiators", division: "D1", city: "Hayward", state: "CA", lat: 37.6688, lng: -122.0808, homeField: "Life West Campus Field", practiceLocation: "Life West Campus, Mon/Wed/Fri 5:30pm", contact: "rugby@lifewest.edu", website: "lifewestrugby.com", founded: "1995", conference: "Pacific Coast" },
+  { name: "Seattle Saracens RFC", division: "D2", city: "Seattle", state: "WA", lat: 47.6062, lng: -122.3321, homeField: "Jefferson Park", practiceLocation: "Jefferson Park, Tue/Thu 6:30pm", contact: "seattlesaracens@gmail.com", website: "seattlesaracens.com", founded: "1983", conference: "Pacific Northwest" },
+  { name: "Denver Barbarians RFC", division: "D2", city: "Denver", state: "CO", lat: 39.7392, lng: -104.9903, homeField: "Harvard Gulch Park", practiceLocation: "Harvard Gulch, Tue/Thu 6pm", contact: "info@denverbarbarians.com", website: "denverbarbarians.com", founded: "1979", conference: "Rocky Mountain" },
+  { name: "Austin Blacks RFC", division: "D2", city: "Austin", state: "TX", lat: 30.2672, lng: -97.7431, homeField: "Austin Sports Complex", practiceLocation: "Austin Sports Complex, Mon/Wed 7pm", contact: "austinblacks@gmail.com", website: "austinblacks.com", founded: "1987", conference: "South" },
+  { name: "Atlanta Renegades RFC", division: "D3", city: "Atlanta", state: "GA", lat: 33.7490, lng: -84.3880, homeField: "Piedmont Park", practiceLocation: "Piedmont Park, Tue/Thu 6:30pm", contact: "renegades@atlantarugby.org", website: "atlantarenegades.com", founded: "2001", conference: "Southeast" },
+  { name: "Minneapolis RFC", division: "D3", city: "Minneapolis", state: "MN", lat: 44.9778, lng: -93.2650, homeField: "Powderhorn Park", practiceLocation: "Powderhorn Park, Mon/Wed 6pm", contact: "info@minneapolisrugby.com", website: "minneapolisrugby.com", founded: "1992", conference: "Midwest" },
+  { name: "Phoenix RFC", division: "D3", city: "Phoenix", state: "AZ", lat: 33.4484, lng: -112.0740, homeField: "Alvord Lake Park", practiceLocation: "Alvord Lake Park, Tue/Thu 7pm", contact: "phoenixrfc@gmail.com", website: "phoenixrfc.com", founded: "1998", conference: "Southwest" },
+  { name: "Portland Pigs RFC", division: "D4", city: "Portland", state: "OR", lat: 45.5051, lng: -122.6750, homeField: "Gabriel Park", practiceLocation: "Gabriel Park, Wed 6:30pm", contact: "portlandpigs@gmail.com", website: "", founded: "2009", conference: "Pacific Northwest" },
+  { name: "Nashville RFC", division: "D4", city: "Nashville", state: "TN", lat: 36.1627, lng: -86.7816, homeField: "Percy Warner Park", practiceLocation: "Percy Warner Park, Tue/Thu 6pm", contact: "nashvillerugby@gmail.com", website: "", founded: "2011", conference: "South" },
+  { name: "Kansas City Blues RFC", division: "D4", city: "Kansas City", state: "MO", lat: 39.0997, lng: -94.5786, homeField: "Swope Park", practiceLocation: "Swope Park, Mon/Wed 6:30pm", contact: "kcbluesrugby@gmail.com", website: "kcbluesrfc.com", founded: "2005", conference: "Midwest" },
+];
+
+// ============================================================
+const COLORS = { D1: '#c0392b', D2: '#2980b9', D3: '#27ae60', D4: '#8e44ad' };
+
+const map = L.map('map', { zoomControl: true }).setView([39.5, -98.35], 4);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap © CARTO',
+  maxZoom: 19
+}).addTo(map);
+
+let allTeams = [];
+let markers = {};
+let activeDiv = 'all';
+let searchTerm = '';
+let activeTeamId = null;
+
+function createMarkerIcon(division) {
+  const color = COLORS[division] || '#888';
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid rgba(255,255,255,0.5);box-shadow:0 2px 6px rgba(0,0,0,0.5)"></div>`,
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+    popupAnchor: [0, -10]
+  });
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+  return lines.slice(1).map(line => {
+    const vals = line.match(/(".*?"|[^,]+)(?=,|$)/g) || [];
+    const obj = {};
+    headers.forEach((h, i) => {
+      obj[h] = (vals[i] || '').replace(/^"|"$/g, '').trim();
+    });
+    return obj;
+  });
+}
+
+async function loadTeams() {
+  let teams = DEMO_DATA;
+
+  if (SHEET_CSV_URL !== 'YOUR_GOOGLE_SHEET_CSV_URL_HERE') {
+    try {
+      const res = await fetch(SHEET_CSV_URL);
+      const text = await res.text();
+      const parsed = parseCSV(text);
+      if (parsed.length > 0) teams = parsed;
+    } catch (e) {
+      console.warn('Could not load from Google Sheet, using demo data:', e);
+    }
+  }
+
+  allTeams = teams.map((t, i) => ({ ...t, _id: i }));
+  document.getElementById('loadingOverlay').style.display = 'none';
+  renderAll();
+}
+
+function renderAll() {
+  const filtered = allTeams.filter(t => {
+    const matchDiv = activeDiv === 'all' || t.division === activeDiv;
+    const q = searchTerm.toLowerCase();
+    const matchSearch = !q ||
+      (t.name || '').toLowerCase().includes(q) ||
+      (t.city || '').toLowerCase().includes(q) ||
+      (t.state || '').toLowerCase().includes(q);
+    return matchDiv && matchSearch;
+  });
+
+  // Update markers
+  Object.values(markers).forEach(m => map.removeLayer(m));
+  markers = {};
+
+  filtered.forEach(t => {
+    const lat = parseFloat(t.lat);
+    const lng = parseFloat(t.lng);
+    if (!lat || !lng) return;
+
+    const m = L.marker([lat, lng], { icon: createMarkerIcon(t.division) }).addTo(map);
+    m.bindPopup(`
+      <div class="popup-name">${t.name}</div>
+      <div class="popup-meta">${t.division} · ${t.city}, ${t.state}</div>
+      <button class="popup-open" onclick="openDetail(${t._id})">View Club</button>
+    `);
+    markers[t._id] = m;
+  });
+
+  // Update sidebar
+  const list = document.getElementById('teamList');
+  document.getElementById('sidebarCount').textContent = `${filtered.length} club${filtered.length !== 1 ? 's' : ''}`;
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="no-results">No clubs match your search.</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(t => `
+    <div class="team-item ${t._id === activeTeamId ? 'active' : ''}" onclick="openDetail(${t._id})" data-id="${t._id}">
+      <div class="div-badge div-${t.division}">${t.division}</div>
+      <div class="team-info">
+        <div class="team-name">${t.name}</div>
+        <div class="team-meta">${t.city}, ${t.state}${t.conference ? ' · ' + t.conference : ''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openDetail(id) {
+  const t = allTeams.find(x => x._id === id);
+  if (!t) return;
+  activeTeamId = id;
+
+  // Highlight sidebar item
+  document.querySelectorAll('.team-item').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.id) === id);
+  });
+
+  // Update panel
+  const color = COLORS[t.division] || '#888';
+  document.getElementById('detailPanel').style.borderLeftColor = color;
+  document.getElementById('detailDiv').textContent = `${t.division} · ${t.conference || ''}`;
+  document.getElementById('detailDiv').style.color = color;
+  document.getElementById('detailName').textContent = t.name;
+  document.getElementById('detailCity').textContent = `${t.city}, ${t.state}`;
+
+  const rows = [
+    t.homeField && { label: 'Home Field', value: t.homeField },
+    t.practiceLocation && { label: 'Practice', value: t.practiceLocation },
+    t.founded && { label: 'Founded', value: t.founded },
+    t.contact && { label: 'Contact', value: t.contact },
+  ].filter(Boolean);
+
+  document.getElementById('detailBody').innerHTML =
+    rows.map(r => `
+      <div class="detail-row">
+        <span class="detail-label">${r.label}</span>
+        <span class="detail-value">${r.value}</span>
+      </div>
+    `).join('') +
+    (t.website ? `<a class="detail-link" href="https://${t.website.replace(/^https?:\/\//, '')}" target="_blank">Visit Website ↗</a>` : '');
+
+  document.getElementById('detailPanel').classList.add('show');
+
+  // Fly to marker
+  const lat = parseFloat(t.lat), lng = parseFloat(t.lng);
+  if (lat && lng) {
+    map.flyTo([lat, lng], 12, { duration: 0.8 });
+    if (markers[id]) markers[id].openPopup();
+  }
+
+  // Scroll sidebar to active item
+  const el = document.querySelector(`.team-item[data-id="${id}"]`);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+document.getElementById('detailClose').addEventListener('click', () => {
+  document.getElementById('detailPanel').classList.remove('show');
+  activeTeamId = null;
+  document.querySelectorAll('.team-item').forEach(el => el.classList.remove('active'));
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeDiv = btn.dataset.div;
+    renderAll();
+  });
+});
+
+let searchTimeout;
+document.getElementById('searchInput').addEventListener('input', e => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    searchTerm = e.target.value;
+    renderAll();
+  }, 200);
+});
+
+loadTeams();
+
+const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById('sidebarToggle');
+
+toggleBtn.addEventListener('click', () => {
+  const isHidden = sidebar.classList.toggle('hidden');
+  toggleBtn.classList.toggle('collapsed', isHidden);
+  toggleBtn.textContent = isHidden ? '▶ Directory' : '◀ Directory';
+  setTimeout(() => map.invalidateSize(), 260);
+});
+</script>
+</body>
+</html>
