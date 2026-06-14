@@ -645,7 +645,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const SHEET_CSV_URL = 'YOUR_GOOGLE_SHEET_CSV_URL_HERE';
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?output=csv';
 
 const DEMO_DATA = [
   { name: "Chicago Griffins RFC", division: "D1", city: "Chicago", state: "IL", lat: 41.8781, lng: -87.6298, homeField: "Montrose Harbor", practiceLocation: "Montrose Harbor, Mon/Wed 6:30pm", contact: "info@chicagogriffins.org", website: "chicagogriffins.org", founded: "1972", conference: "Midwest" },
@@ -703,7 +703,7 @@ function parseCSV(text) {
 
 async function loadTeams() {
   let teams = DEMO_DATA;
-  if (SHEET_CSV_URL !== 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?output=csv') {
+  if (SHEET_CSV_URL !== 'YOUR_GOOGLE_SHEET_CSV_URL_HERE') {
     try {
       const res = await fetch(SHEET_CSV_URL);
       const text = await res.text();
