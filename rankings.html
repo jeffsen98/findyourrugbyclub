@@ -4,18 +4,41 @@
 <meta charset="UTF-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link rel="icon" type="image/png" href="usarugby.png"/>
-<title>Rankings "” USA Club Rugby Directory</title>
+<title>Rankings - USA Club Rugby Directory</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
   body { font-family: 'Inter', sans-serif; }
+  .rankings-table { width:100%; border-collapse:collapse; table-layout:fixed; }
+  .col-rank { width:56px; }
+  .col-team { width:40%; }
+  .col-stat { width:64px; }
 </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
 
-<!-- Header -->
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 border-b transition-all duration-200" style="background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-color:#c4c6d0;">
-  <div class="flex items-center gap-8">
+<div id="drawerOverlay" class="fixed inset-0 z-40 bg-black/50 hidden" onclick="closeDrawer()"></div>
+<div id="mobileDrawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col shadow-2xl transition-transform duration-300 -translate-x-full" style="background:#000e27;">
+  <div class="flex items-center justify-between px-6 h-16 border-b" style="border-color:#1a3a6a;">
+    <a href="https://usa.rugby/" target="_blank"><img src="usarugby.png" alt="USA Rugby" class="h-9 w-auto object-contain"/></a>
+    <button onclick="closeDrawer()" class="text-white text-2xl leading-none" style="background:none;border:none;cursor:pointer;">&#x2715;</button>
+  </div>
+  <nav class="flex flex-col px-6 py-8 gap-1">
+    <a href="/" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Home</a>
+    <a href="about" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">About</a>
+    <a href="https://xplorer.rugby/" target="_blank" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Competitions</a>
+    <a href="rankings" class="font-bold text-base py-3 border-b" style="border-color:#1a3a6a;color:#b22234;">Rankings</a>
+    <a href="contact" class="text-white font-bold text-base py-3">Contact</a>
+  </nav>
+</div>
+
+<header class="fixed top-0 w-full z-40 flex justify-between items-center px-6 h-16 border-b transition-all duration-200" style="background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-color:#c4c6d0;">
+  <div class="flex items-center gap-6">
+    <button class="md:hidden flex flex-col gap-1.5 p-1" onclick="openDrawer()" style="background:none;border:none;cursor:pointer;">
+      <span class="block w-6 h-0.5" style="background:#000e27;"></span>
+      <span class="block w-6 h-0.5" style="background:#000e27;"></span>
+      <span class="block w-6 h-0.5" style="background:#000e27;"></span>
+    </button>
     <a href="https://usa.rugby/" target="_blank" class="flex items-center gap-2.5">
       <img src="usarugby.png" alt="USA Rugby" class="h-10 w-auto object-contain"/>
     </a>
@@ -26,10 +49,10 @@
       <a class="text-sm font-semibold transition-colors" style="color:#b22234;" href="rankings">Rankings</a>
     </nav>
   </div>
-  <a href="contact" class="text-sm font-bold px-4 py-2 rounded-full text-white transition-opacity hover:opacity-90" style="background:#b22234;">Contact Us</a>`n</header>
+  <a href="contact" class="text-sm font-bold px-4 py-2 rounded-full text-white transition-opacity hover:opacity-90" style="background:#b22234;">Contact Us</a>
+</header>
 
 <main class="pt-16">
-  <!-- Hero -->
   <section class="flex flex-col items-center justify-center px-4 py-16 bg-white border-b" style="border-color:#c4c6d0;">
     <div class="max-w-4xl w-full text-center space-y-4">
       <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">Club Rankings</h1>
@@ -38,23 +61,12 @@
     </div>
   </section>
 
-  <!-- Loading -->
   <div id="loadingState" class="text-center py-20">
     <div class="w-8 h-8 rounded-full animate-spin mx-auto mb-4" style="border:3px solid #c4c6d0;border-top-color:#b22234;"></div>
-    <p class="text-sm font-medium" style="color:#747780;">Loading rankings…</p>
+    <p class="text-sm font-medium" style="color:#747780;">Loading rankings...</p>
   </div>
 
-  <!-- Tables -->
   <div id="tablesWrap" class="hidden max-w-5xl mx-auto px-6 py-12 space-y-14">
-
-    <!-- shared colgroup template applied via JS -->
-    <style>
-      .rankings-table { width:100%; text-sm; border-collapse:collapse; table-layout:fixed; }
-      .col-rank  { width: 56px; }
-      .col-team  { width: 40%; }
-      .col-conf  { }
-      .col-stat  { width: 64px; }
-    </style>
 
     <!-- D1 -->
     <div>
@@ -64,17 +76,15 @@
       </div>
       <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
         <table class="rankings-table text-sm">
-          <colgroup><col class="col-rank"/><col class="col-team"/><col class="col-conf"/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
-          <thead>
-            <tr style="background:#000e27;color:#fff;">
-              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
-              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
-              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Conference</th>
-              <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
-              <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">L</th>
-              <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">D</th>
-            </tr>
-          </thead>
+          <colgroup><col class="col-rank"/><col class="col-team"/><col/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
+          <thead><tr style="background:#000e27;color:#fff;">
+            <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
+            <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
+            <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Conference</th>
+            <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
+            <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">L</th>
+            <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">D</th>
+          </tr></thead>
           <tbody id="d1Body"></tbody>
         </table>
       </div>
@@ -89,17 +99,15 @@
       </div>
       <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
         <table class="rankings-table text-sm">
-          <colgroup><col class="col-rank"/><col class="col-team"/><col class="col-conf"/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
-          <thead>
-            <tr style="background:#000e27;color:#fff;">
-              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
-              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
-              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Conference</th>
-              <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
-              <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">L</th>
-              <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">D</th>
-            </tr>
-          </thead>
+          <colgroup><col class="col-rank"/><col class="col-team"/><col/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
+          <thead><tr style="background:#000e27;color:#fff;">
+            <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
+            <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
+            <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Conference</th>
+            <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
+            <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">L</th>
+            <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">D</th>
+          </tr></thead>
           <tbody id="d2Body"></tbody>
         </table>
       </div>
@@ -114,17 +122,15 @@
       </div>
       <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
         <table class="rankings-table text-sm">
-          <colgroup><col class="col-rank"/><col class="col-team"/><col class="col-conf"/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
-          <thead>
-            <tr style="background:#000e27;color:#fff;">
-              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
-              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
-              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Conference</th>
-              <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
-              <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">L</th>
-              <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">D</th>
-            </tr>
-          </thead>
+          <colgroup><col class="col-rank"/><col class="col-team"/><col/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
+          <thead><tr style="background:#000e27;color:#fff;">
+            <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
+            <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
+            <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Conference</th>
+            <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
+            <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">L</th>
+            <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">D</th>
+          </tr></thead>
           <tbody id="d3Body"></tbody>
         </table>
       </div>
@@ -134,29 +140,20 @@
     <p class="text-xs text-right" style="color:#a8b4c8;">Rankings pulled live from Google Sheets</p>
   </div>
 
-  <!-- Error / Setup instructions -->
   <div id="errorState" class="hidden max-w-2xl mx-auto px-6 py-16">
     <div class="p-6 rounded-2xl border space-y-3" style="border-color:#c4c6d0;">
-      <p class="font-bold" style="color:#000e27;">Rankings not configured yet</p>
-      <p class="text-sm" style="color:#44474f;">To set up rankings:</p>
-      <ol class="text-sm space-y-1 list-decimal list-inside" style="color:#44474f;">
-        <li>Open your Google Sheet and add a new tab named <strong>Rankings</strong></li>
-        <li>Use these headers in row 1: <code class="bg-gray-100 px-1 rounded">rank, team, division, conference, w, l, d</code></li>
-        <li>Fill in your data "” set <strong>division</strong> to D1, D2, or D3 for each row</li>
-        <li>File â†’ Share â†’ Publish to web â†’ select the <strong>Rankings</strong> tab â†’ CSV â†’ Publish</li>
-        <li>Paste the URL into <code class="bg-gray-100 px-1 rounded">rankings.html</code> at <code class="bg-gray-100 px-1 rounded">https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?gid=1696848951&single=true&output=csv</code></li>
-      </ol>
+      <p class="font-bold" style="color:#000e27;">Could not load rankings.</p>
+      <p class="text-sm" style="color:#44474f;">Please check back later.</p>
     </div>
   </div>
 </main>
 
-<!-- Footer -->
 <footer class="bg-white border-t py-10 px-8 mt-4" style="border-color:#c4c6d0;">
   <div class="max-w-[1440px] mx-auto flex flex-col gap-4">
     <p class="text-xs text-center" style="color:#a8b4c8;">This is an unofficial, fan-made community directory. Not affiliated with, endorsed by, or sponsored by USA Rugby.</p>
     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-4">
-        <span class="text-xs" style="color:#747780;">© 2026 USA Club Rugby Directory</span>
+        <span class="text-xs" style="color:#747780;">&#169; 2026 USA Club Rugby Directory</span>
         <span style="color:#747780;">|</span>
         <nav class="flex gap-4">
           <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="privacy">Privacy</a>
@@ -170,13 +167,7 @@
 </footer>
 
 <script>
-// â”€â”€ CONFIGURATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// 1. Add a "Rankings" tab to your Google Sheet
-// 2. Row 1 headers: rank | team | division | conference | w | l | d
-// 3. File â†’ Share â†’ Publish to web â†’ Rankings tab â†’ CSV â†’ Publish
-// 4. Paste URL below
 const RANKINGS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?gid=1696848951&single=true&output=csv';
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function parseCSV(text) {
   const lines = text.trim().split('\n');
@@ -194,55 +185,46 @@ function buildRows(rows) {
   return rows.map((r, i) => {
     const rank = parseInt(r.rank || i + 1);
     const isTop3 = rank <= 3;
-    return `
-      <tr style="border-bottom:1px solid #e5e7eb;background:${isTop3 ? '#fafbff' : i % 2 === 0 ? '#fff' : '#f9fafb'};">
-        <td class="px-4 py-3 font-bold text-center text-sm" style="color:${isTop3 ? '#b22234' : '#747780'};">
-          ${rank}
-        </td>
-        <td class="px-4 py-3 font-semibold text-sm" style="color:#000e27;">${r.team || '"”'}</td>
-        <td class="px-4 py-3 text-sm hidden sm:table-cell" style="color:#44474f;">${r.conference || '"”'}</td>
-        <td class="px-4 py-3 text-center font-semibold text-sm" style="color:#2e7d52;">${r.w || '0'}</td>
-        <td class="px-4 py-3 text-center font-semibold text-sm" style="color:#b22234;">${r.l || '0'}</td>
-        <td class="px-4 py-3 text-center text-sm" style="color:#44474f;">${r.d || '0'}</td>
-      </tr>`;
+    return `<tr style="border-bottom:1px solid #e5e7eb;background:${isTop3 ? '#fafbff' : i % 2 === 0 ? '#fff' : '#f9fafb'};">
+      <td class="px-4 py-3 font-bold text-center text-sm" style="color:${isTop3 ? '#b22234' : '#747780'};">${rank}</td>
+      <td class="px-4 py-3 font-semibold text-sm" style="color:#000e27;">${r.team || '-'}</td>
+      <td class="px-4 py-3 text-sm hidden sm:table-cell" style="color:#44474f;">${r.conference || '-'}</td>
+      <td class="px-4 py-3 text-center font-semibold text-sm" style="color:#2e7d52;">${r.w || '0'}</td>
+      <td class="px-4 py-3 text-center font-semibold text-sm" style="color:#b22234;">${r.l || '0'}</td>
+      <td class="px-4 py-3 text-center text-sm" style="color:#44474f;">${r.d || '0'}</td>
+    </tr>`;
   }).join('');
 }
 
 async function loadRankings() {
-  if (RANKINGS_CSV_URL === 'YOUR_RANKINGS_CSV_URL_HERE') {
-    document.getElementById('loadingState').classList.add('hidden');
-    document.getElementById('errorState').classList.remove('hidden');
-    return;
-  }
-
   try {
     const res = await fetch(RANKINGS_CSV_URL);
     const text = await res.text();
     const all = parseCSV(text);
-
     const d1 = all.filter(r => (r.division || '').toUpperCase() === 'D1');
     const d2 = all.filter(r => (r.division || '').toUpperCase() === 'D2');
     const d3 = all.filter(r => (r.division || '').toUpperCase() === 'D3');
-
-    const d1html = buildRows(d1);
-    const d2html = buildRows(d2);
-    const d3html = buildRows(d3);
-
-    if (d1html) document.getElementById('d1Body').innerHTML = d1html;
-    else document.getElementById('d1Empty').classList.remove('hidden');
-
-    if (d2html) document.getElementById('d2Body').innerHTML = d2html;
-    else document.getElementById('d2Empty').classList.remove('hidden');
-
-    if (d3html) document.getElementById('d3Body').innerHTML = d3html;
-    else document.getElementById('d3Empty').classList.remove('hidden');
-
+    const d1html = buildRows(d1); const d2html = buildRows(d2); const d3html = buildRows(d3);
+    if (d1html) document.getElementById('d1Body').innerHTML = d1html; else document.getElementById('d1Empty').classList.remove('hidden');
+    if (d2html) document.getElementById('d2Body').innerHTML = d2html; else document.getElementById('d2Empty').classList.remove('hidden');
+    if (d3html) document.getElementById('d3Body').innerHTML = d3html; else document.getElementById('d3Empty').classList.remove('hidden');
     document.getElementById('loadingState').classList.add('hidden');
     document.getElementById('tablesWrap').classList.remove('hidden');
   } catch (e) {
     document.getElementById('loadingState').classList.add('hidden');
     document.getElementById('errorState').classList.remove('hidden');
   }
+}
+
+function openDrawer() {
+  document.getElementById('mobileDrawer').classList.remove('-translate-x-full');
+  document.getElementById('drawerOverlay').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('mobileDrawer').classList.add('-translate-x-full');
+  document.getElementById('drawerOverlay').classList.add('hidden');
+  document.body.style.overflow = '';
 }
 
 window.addEventListener('scroll', () => {
