@@ -102,7 +102,6 @@
           <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D1">D1 — Premier</button>
           <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D2">D2 — Championship</button>
           <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D3">D3 — Community</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D4">D4 — Developmental</button>
         </div>
       </div>
     </div>
@@ -149,7 +148,6 @@
             <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#b22234;"></span> D1 — Premier</div>
             <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#1a4f8a;"></span> D2 — Championship</div>
             <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#c17f24;"></span> D3 — Community</div>
-            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#2e7d52;"></span> D4 — Developmental</div>
           </div>
         </div>
       </div>
@@ -188,17 +186,13 @@ const DEMO_DATA = [
   { name: "Atlanta Renegades RFC", division: "D3", city: "Atlanta", state: "GA", lat: 33.7490, lng: -84.3880, homeField: "Piedmont Park", practiceLocation: "Piedmont Park, Tue/Thu 6:30pm", contact: "renegades@atlantarugby.org", website: "atlantarenegades.com", founded: "2001", conference: "Southeast" },
   { name: "Minneapolis RFC", division: "D3", city: "Minneapolis", state: "MN", lat: 44.9778, lng: -93.2650, homeField: "Powderhorn Park", practiceLocation: "Powderhorn Park, Mon/Wed 6pm", contact: "info@minneapolisrugby.com", website: "minneapolisrugby.com", founded: "1992", conference: "Midwest" },
   { name: "Phoenix RFC", division: "D3", city: "Phoenix", state: "AZ", lat: 33.4484, lng: -112.0740, homeField: "Alvord Lake Park", practiceLocation: "Alvord Lake Park, Tue/Thu 7pm", contact: "phoenixrfc@gmail.com", website: "phoenixrfc.com", founded: "1998", conference: "Southwest" },
-  { name: "Portland Pigs RFC", division: "D4", city: "Portland", state: "OR", lat: 45.5051, lng: -122.6750, homeField: "Gabriel Park", practiceLocation: "Gabriel Park, Wed 6:30pm", contact: "portlandpigs@gmail.com", website: "", founded: "2009", conference: "Pacific Northwest" },
-  { name: "Nashville RFC", division: "D4", city: "Nashville", state: "TN", lat: 36.1627, lng: -86.7816, homeField: "Percy Warner Park", practiceLocation: "Percy Warner Park, Tue/Thu 6pm", contact: "nashvillerugby@gmail.com", website: "", founded: "2011", conference: "South" },
-  { name: "Kansas City Blues RFC", division: "D4", city: "Kansas City", state: "MO", lat: 39.0997, lng: -94.5786, homeField: "Swope Park", practiceLocation: "Swope Park, Mon/Wed 6:30pm", contact: "kcbluesrugby@gmail.com", website: "kcbluesrfc.com", founded: "2005", conference: "Midwest" },
 ];
 
-const COLORS = { D1: '#b22234', D2: '#1a4f8a', D3: '#c17f24', D4: '#2e7d52' };
+const COLORS = { D1: '#b22234', D2: '#1a4f8a', D3: '#c17f24' };
 const DIV_STYLE = {
   D1: 'background:rgba(178,34,52,0.12);color:#b22234;border:1px solid rgba(178,34,52,0.4);',
   D2: 'background:rgba(26,79,138,0.12);color:#1a4f8a;border:1px solid rgba(26,79,138,0.4);',
   D3: 'background:rgba(193,127,36,0.12);color:#c17f24;border:1px solid rgba(193,127,36,0.4);',
-  D4: 'background:rgba(46,125,82,0.12);color:#2e7d52;border:1px solid rgba(46,125,82,0.4);',
 };
 
 const map = L.map('map', { zoomControl: true }).setView([39.5, -98.35], 4);
@@ -254,7 +248,7 @@ function renderAll() {
       (t.city || '').toLowerCase().includes(q) ||
       (t.state || '').toLowerCase().includes(q);
     return matchDiv && matchSearch;
-  });
+  }).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
   Object.values(markers).forEach(m => map.removeLayer(m));
   markers = {};
