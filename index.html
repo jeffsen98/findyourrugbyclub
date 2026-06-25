@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link rel="icon" type="image/png" href="usarugby.png"/>
-<title>Find Your Rugby Club "” USA Club Rugby Directory</title>
+<title>Find Your Rugby Club - USA Club Rugby Directory</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -61,13 +61,27 @@
 <!-- Welcome Modal -->
 <div class="modal-backdrop" id="welcomeModal">
   <div class="bg-navy-mid rounded-2xl w-full max-w-md mx-4 p-8 shadow-2xl" style="border: 1px solid #1a3a6a; border-top: 4px solid #b22234;">
-    <div class="text-2xl font-extrabold text-white mb-1 flex items-center gap-3"><img src="usarugby.png" alt="USA Rugby" class="h-10 w-auto object-contain"/> Find Your Rugby Club</div>
-    <p class="text-sm text-silver mb-5">USA Club Rugby Directory "” here's how to get started:</p>
+    <div class="text-2xl font-extrabold text-white mb-1 flex items-center gap-3">
+      <img src="usarugby.png" alt="USA Rugby" class="h-10 w-auto object-contain"/> Find Your Rugby Club
+    </div>
+    <p class="text-sm text-silver mb-5">USA Club Rugby Directory - here's how to get started:</p>
     <ul class="space-y-3 mb-6">
-      <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">ðŸ—º</span><span>Browse the map to see clubs across the country. Click any marker to view details.</span></li>
-      <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">ðŸ·</span><span>Use the <strong>Division filter</strong> buttons to filter by level.</span></li>
-      <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">ðŸ”</span><span>Search by club name, city, or state using the search bar.</span></li>
-      <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">ðŸ“‹</span><span>The <strong>Club Directory</strong> lists all matching clubs "” click any to fly to it on the map.</span></li>
+      <li class="flex gap-3 text-sm text-white">
+        <span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-base" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">&#x1F5FA;</span>
+        <span>Browse the map to see clubs across the country. Click any marker to view details.</span>
+      </li>
+      <li class="flex gap-3 text-sm text-white">
+        <span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-base" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">&#x1F3F7;</span>
+        <span>Use the <strong>Division filter</strong> buttons to filter by level.</span>
+      </li>
+      <li class="flex gap-3 text-sm text-white">
+        <span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-base" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">&#x1F50D;</span>
+        <span>Search by club name, city, or state using the search bar.</span>
+      </li>
+      <li class="flex gap-3 text-sm text-white">
+        <span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-base" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">&#x1F4CB;</span>
+        <span>The <strong>Club Directory</strong> lists all matching clubs - click any to fly to it on the map.</span>
+      </li>
     </ul>
     <button id="welcomeOk" class="w-full py-2.5 font-bold rounded-lg text-white transition-colors" style="background:#b22234;">OK, Got It</button>
   </div>
@@ -82,10 +96,10 @@
     <a href="https://usa.rugby/" target="_blank">
       <img src="usarugby.png" alt="USA Rugby" class="h-9 w-auto object-contain"/>
     </a>
-    <button onclick="closeDrawer()" class="text-white text-2xl leading-none" style="background:none;border:none;cursor:pointer;">✕</button>
+    <button onclick="closeDrawer()" class="text-white text-2xl leading-none" style="background:none;border:none;cursor:pointer;">&#x2715;</button>
   </div>
   <nav class="flex flex-col px-6 py-8 gap-1">
-    <a href="/" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Home</a>
+    <a href="/" class="font-bold text-base py-3 border-b" style="color:#b22234;border-color:#1a3a6a;">Home</a>
     <a href="about" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">About</a>
     <a href="https://xplorer.rugby/" target="_blank" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Competitions</a>
     <a href="rankings" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Rankings</a>
@@ -96,7 +110,6 @@
 <!-- Header -->
 <header class="fixed top-0 w-full z-40 flex justify-between items-center px-6 h-16 border-b transition-all duration-200" style="background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-color:#c4c6d0;">
   <div class="flex items-center gap-6">
-    <!-- Hamburger (mobile only) -->
     <button id="menuBtn" class="md:hidden flex flex-col gap-1.5 p-1" onclick="openDrawer()" style="background:none;border:none;cursor:pointer;">
       <span class="block w-6 h-0.5" style="background:#000e27;"></span>
       <span class="block w-6 h-0.5" style="background:#000e27;"></span>
@@ -123,14 +136,14 @@
       <p class="text-lg max-w-xl mx-auto" style="color:#44474f;">Explore active clubs across the United States. Find a team and get on the pitch.</p>
       <div class="max-w-2xl mx-auto">
         <div class="search-input-shadow flex items-center bg-white rounded-full h-14 px-6 transition-all" style="border:1px solid #c4c6d0;">
-          <span style="color:#747780;font-size:1.2rem;">âŒ•</span>
+          <span style="color:#747780;font-size:1.2rem;">&#x2315;</span>
           <input id="searchInput" class="flex-1 bg-transparent border-none focus:ring-0 text-base px-4 outline-none" placeholder="Enter city, state, or club name..." style="color:#000e27;" type="text"/>
         </div>
         <div class="flex justify-center gap-3 mt-5 flex-wrap">
           <button class="filter-btn active px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="all">All Divisions</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D1">D1 "” Premier</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D2">D2 "” Championship</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D3">D3 "” Community</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D1">D1 - Premier</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D2">D2 - Championship</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D3">D3 - Community</button>
         </div>
       </div>
     </div>
@@ -144,14 +157,13 @@
       <div class="lg:col-span-4 flex flex-col gap-4 order-2 lg:order-1">
         <div class="flex items-center justify-between">
           <h2 class="text-xl font-bold" style="color:#000e27;">Club Directory</h2>
-          <span id="sidebarCount" class="text-sm" style="color:#747780;">Loading…</span>
+          <span id="sidebarCount" class="text-sm" style="color:#747780;">Loading...</span>
         </div>
         <div id="teamList" class="space-y-3 overflow-y-auto custom-scrollbar" style="max-height:560px;"></div>
       </div>
 
       <!-- Map (collapsible on mobile) -->
       <div class="lg:col-span-8 order-1 lg:order-2">
-        <!-- Mobile map toggle -->
         <button id="mapToggleBtn" onclick="toggleMap()" class="md:hidden w-full flex items-center justify-between px-4 py-3 rounded-xl mb-3 text-sm font-bold" style="background:#000e27;color:#fff;">
           <span>Show Map</span>
           <svg id="mapChevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -162,12 +174,12 @@
           <!-- Loading overlay -->
           <div id="loadingOverlay" class="absolute inset-0 flex flex-col items-center justify-center gap-3" style="background:rgba(0,14,39,0.82);z-index:2000;">
             <div class="w-9 h-9 rounded-full animate-spin" style="border:4px solid #1a3a6a;border-top-color:#b22234;"></div>
-            <span class="font-bold tracking-widest text-sm uppercase text-white">Loading clubs…</span>
+            <span class="font-bold tracking-widest text-sm uppercase text-white">Loading clubs...</span>
           </div>
 
           <!-- Detail panel -->
           <div id="detailPanel" class="absolute bottom-4 left-4 w-72 rounded-xl overflow-hidden shadow-2xl hidden" style="background:#0d1f3c;border:1px solid #1a3a6a;border-left:4px solid #b22234;z-index:500;">
-            <button id="detailClose" class="absolute top-2 right-3 text-lg leading-none" style="color:#a8b4c8;background:none;border:none;cursor:pointer;">âœ•</button>
+            <button id="detailClose" class="absolute top-2 right-3 text-lg leading-none" style="color:#a8b4c8;background:none;border:none;cursor:pointer;">&#x2715;</button>
             <div class="p-4 border-b" style="background:#000e27;border-color:#1a3a6a;">
               <div id="detailDiv" class="text-xs font-bold uppercase tracking-widest mb-1"></div>
               <div id="detailName" class="text-white font-extrabold text-lg leading-tight"></div>
@@ -179,12 +191,11 @@
           <!-- Legend -->
           <div class="absolute top-3 right-3 rounded-xl px-3 py-2 text-xs" style="background:rgba(13,31,60,0.95);border:1px solid #1a3a6a;z-index:400;color:#a8b4c8;">
             <div class="font-bold text-white mb-1.5 uppercase tracking-wider" style="font-size:10px;">Division</div>
-            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#b22234;"></span> D1 "” Premier</div>
-            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#1a4f8a;"></span> D2 "” Championship</div>
-            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#c17f24;"></span> D3 "” Community</div>
+            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#b22234;"></span> D1 - Premier</div>
+            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#1a4f8a;"></span> D2 - Championship</div>
+            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#c17f24;"></span> D3 - Community</div>
           </div>
         </div>
-        </div><!-- /mapWrap -->
       </div>
 
     </div>
@@ -197,7 +208,7 @@
     <p class="text-xs text-center" style="color:#a8b4c8;">This is an unofficial, fan-made community directory. Not affiliated with, endorsed by, or sponsored by USA Rugby.</p>
     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-4">
-        <span class="text-xs" style="color:#747780;">© 2026 USA Club Rugby Directory</span>
+        <span class="text-xs" style="color:#747780;">&#169; 2026 USA Club Rugby Directory</span>
         <span style="color:#747780;">|</span>
         <nav class="flex gap-4">
           <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="privacy">Privacy</a>
@@ -214,7 +225,6 @@
 <script>
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?output=csv';
 
-
 const COLORS = { D1: '#b22234', D2: '#1a4f8a', D3: '#c17f24' };
 const DIV_STYLE = {
   D1: 'background:rgba(178,34,52,0.12);color:#b22234;border:1px solid rgba(178,34,52,0.4);',
@@ -224,7 +234,7 @@ const DIV_STYLE = {
 
 const map = L.map('map', { zoomControl: true }).setView([39.5, -98.35], 4);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-  attribution: '© OpenStreetMap © CARTO', maxZoom: 19
+  attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
 }).addTo(map);
 
 let allTeams = [], markers = {}, activeDiv = 'all', searchTerm = '', activeTeamId = null;
@@ -284,7 +294,7 @@ function renderAll() {
     const m = L.marker([lat, lng], { icon: createMarkerIcon(t.division) }).addTo(map);
     m.bindPopup(`
       <div class="popup-name">${t.name}</div>
-      <div class="popup-meta">${t.division} Â· ${t.city}, ${t.state}</div>
+      <div class="popup-meta">${t.division} &middot; ${t.city}, ${t.state}</div>
       <button class="popup-open" onclick="openDetail(${t._id})">View Club</button>
     `);
     markers[t._id] = m;
@@ -306,7 +316,7 @@ function renderAll() {
         </div>
         <div style="flex:1;min-width:0;">
           <div style="font-weight:700;color:#000e27;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.name}</div>
-          <div style="font-size:0.75rem;color:#747780;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.city || ''}${t.state ? ', ' + t.state : ''}${t.conference ? ' Â· ' + t.conference : ''}</div>
+          <div style="font-size:0.75rem;color:#747780;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.city || ''}${t.state ? ', ' + t.state : ''}${t.conference ? ' &middot; ' + t.conference : ''}</div>
         </div>
       </div>
     </div>
@@ -322,7 +332,7 @@ function openDetail(id) {
   const color = COLORS[t.division] || '#888';
   const panel = document.getElementById('detailPanel');
   panel.style.borderLeftColor = color;
-  document.getElementById('detailDiv').textContent = `${t.division || ''} Â· ${t.conference || ''}`;
+  document.getElementById('detailDiv').textContent = `${t.division || ''} - ${t.conference || ''}`;
   document.getElementById('detailDiv').style.color = color;
   document.getElementById('detailName').textContent = t.name;
   document.getElementById('detailCity').textContent = `${t.city || ''}, ${t.state || ''}`;
@@ -341,7 +351,7 @@ function openDetail(id) {
         <span style="color:#f0f4ff;font-size:0.75rem;">${r.value}</span>
       </div>
     `).join('') +
-    (t.website ? `<a style="display:inline-block;margin-top:8px;padding:6px 14px;background:#b22234;color:#fff;border-radius:8px;font-size:0.75rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.05em;" href="https://${t.website.replace(/^https?:\/\//, '')}" target="_blank">Visit Website â†—</a>` : '');
+    (t.website ? `<a style="display:inline-block;margin-top:8px;padding:6px 14px;background:#b22234;color:#fff;border-radius:8px;font-size:0.75rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.05em;" href="https://${t.website.replace(/^https?:\/\//, '')}" target="_blank">Visit Website</a>` : '');
 
   panel.classList.remove('hidden');
 
@@ -361,7 +371,6 @@ document.getElementById('detailClose').addEventListener('click', () => {
   renderAll();
 });
 
-// Filter buttons
 document.querySelectorAll('.filter-btn').forEach(btn => {
   const isActive = btn.classList.contains('active');
   btn.style.cssText = isActive
@@ -379,12 +388,8 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     renderAll();
   });
 
-  btn.addEventListener('mouseover', () => {
-    if (!btn.classList.contains('active')) btn.style.borderColor = '#b22234';
-  });
-  btn.addEventListener('mouseout', () => {
-    if (!btn.classList.contains('active')) btn.style.borderColor = '#c4c6d0';
-  });
+  btn.addEventListener('mouseover', () => { if (!btn.classList.contains('active')) btn.style.borderColor = '#b22234'; });
+  btn.addEventListener('mouseout', () => { if (!btn.classList.contains('active')) btn.style.borderColor = '#c4c6d0'; });
 });
 
 let searchTimeout;
@@ -399,13 +404,11 @@ document.getElementById('welcomeOk').addEventListener('click', () => {
 
 window.addEventListener('scroll', () => {
   const header = document.querySelector('header');
-  if (window.scrollY > 50) header.style.boxShadow = '0 1px 4px rgba(0,0,0,0.1)';
-  else header.style.boxShadow = 'none';
+  header.style.boxShadow = window.scrollY > 50 ? '0 1px 4px rgba(0,0,0,0.1)' : 'none';
 });
 
 loadTeams();
 
-// ── Drawer ──────────────────────────────────────
 function openDrawer() {
   document.getElementById('mobileDrawer').classList.remove('-translate-x-full');
   document.getElementById('drawerOverlay').classList.remove('hidden');
@@ -417,12 +420,11 @@ function closeDrawer() {
   document.body.style.overflow = '';
 }
 
-// ── Map toggle (mobile) ─────────────────────────
 let mapOpen = false;
 function toggleMap() {
   mapOpen = !mapOpen;
   const wrap = document.getElementById('mapWrap');
-  const btn  = document.getElementById('mapToggleBtn');
+  const btn = document.getElementById('mapToggleBtn');
   const chevron = document.getElementById('mapChevron');
   if (mapOpen) {
     wrap.classList.remove('hidden');
