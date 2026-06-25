@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link rel="icon" type="image/png" href="usarugby.png"/>
-<title>Find Your Rugby Club â€” USA Club Rugby Directory</title>
+<title>Find Your Rugby Club "” USA Club Rugby Directory</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -62,12 +62,12 @@
 <div class="modal-backdrop" id="welcomeModal">
   <div class="bg-navy-mid rounded-2xl w-full max-w-md mx-4 p-8 shadow-2xl" style="border: 1px solid #1a3a6a; border-top: 4px solid #b22234;">
     <div class="text-2xl font-extrabold text-white mb-1 flex items-center gap-3"><img src="usarugby.png" alt="USA Rugby" class="h-10 w-auto object-contain"/> Find Your Rugby Club</div>
-    <p class="text-sm text-silver mb-5">USA Club Rugby Directory â€” here's how to get started:</p>
+    <p class="text-sm text-silver mb-5">USA Club Rugby Directory "” here's how to get started:</p>
     <ul class="space-y-3 mb-6">
       <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">ðŸ—º</span><span>Browse the map to see clubs across the country. Click any marker to view details.</span></li>
       <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">ðŸ·</span><span>Use the <strong>Division filter</strong> buttons to filter by level.</span></li>
       <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">ðŸ”</span><span>Search by club name, city, or state using the search bar.</span></li>
-      <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">ðŸ“‹</span><span>The <strong>Club Directory</strong> lists all matching clubs â€” click any to fly to it on the map.</span></li>
+      <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">ðŸ“‹</span><span>The <strong>Club Directory</strong> lists all matching clubs "” click any to fly to it on the map.</span></li>
     </ul>
     <button id="welcomeOk" class="w-full py-2.5 font-bold rounded-lg text-white transition-colors" style="background:#b22234;">OK, Got It</button>
   </div>
@@ -101,9 +101,9 @@
         </div>
         <div class="flex justify-center gap-3 mt-5 flex-wrap">
           <button class="filter-btn active px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="all">All Divisions</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D1">D1 â€” Premier</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D2">D2 â€” Championship</button>
-          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D3">D3 â€” Community</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D1">D1 "” Premier</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D2">D2 "” Championship</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D3">D3 "” Community</button>
         </div>
       </div>
     </div>
@@ -147,9 +147,9 @@
           <!-- Legend -->
           <div class="absolute top-3 right-3 rounded-xl px-3 py-2 text-xs" style="background:rgba(13,31,60,0.95);border:1px solid #1a3a6a;z-index:400;color:#a8b4c8;">
             <div class="font-bold text-white mb-1.5 uppercase tracking-wider" style="font-size:10px;">Division</div>
-            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#b22234;"></span> D1 â€” Premier</div>
-            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#1a4f8a;"></span> D2 â€” Championship</div>
-            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#c17f24;"></span> D3 â€” Community</div>
+            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#b22234;"></span> D1 "” Premier</div>
+            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#1a4f8a;"></span> D2 "” Championship</div>
+            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#c17f24;"></span> D3 "” Community</div>
           </div>
         </div>
       </div>
