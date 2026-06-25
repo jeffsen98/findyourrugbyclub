@@ -423,11 +423,15 @@ function openDrawer() {
   document.getElementById('mobileDrawer').classList.remove('-translate-x-full');
   document.getElementById('drawerOverlay').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+  const mapWrap = document.getElementById('mapWrap');
+  if (mapWrap) mapWrap.style.zIndex = '0';
 }
 function closeDrawer() {
   document.getElementById('mobileDrawer').classList.add('-translate-x-full');
   document.getElementById('drawerOverlay').classList.add('hidden');
   document.body.style.overflow = '';
+  const mapWrap = document.getElementById('mapWrap');
+  if (mapWrap) mapWrap.style.zIndex = '';
 }
 
 let mapOpen = false;
