@@ -47,6 +47,15 @@
   <!-- Tables -->
   <div id="tablesWrap" class="hidden max-w-5xl mx-auto px-6 py-12 space-y-14">
 
+    <!-- shared colgroup template applied via JS -->
+    <style>
+      .rankings-table { width:100%; text-sm; border-collapse:collapse; table-layout:fixed; }
+      .col-rank  { width: 56px; }
+      .col-team  { width: 40%; }
+      .col-conf  { }
+      .col-stat  { width: 64px; }
+    </style>
+
     <!-- D1 -->
     <div>
       <div class="flex items-center gap-3 mb-4">
@@ -54,10 +63,11 @@
         <h2 class="text-2xl font-extrabold" style="color:#000e27;">Premier</h2>
       </div>
       <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
-        <table class="w-full text-sm border-collapse">
+        <table class="rankings-table text-sm">
+          <colgroup><col class="col-rank"/><col class="col-team"/><col class="col-conf"/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
           <thead>
             <tr style="background:#000e27;color:#fff;">
-              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider w-12">#</th>
+              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
               <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
               <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Conference</th>
               <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
@@ -78,10 +88,11 @@
         <h2 class="text-2xl font-extrabold" style="color:#000e27;">Championship</h2>
       </div>
       <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
-        <table class="w-full text-sm border-collapse">
+        <table class="rankings-table text-sm">
+          <colgroup><col class="col-rank"/><col class="col-team"/><col class="col-conf"/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
           <thead>
             <tr style="background:#000e27;color:#fff;">
-              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider w-12">#</th>
+              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
               <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
               <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Conference</th>
               <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
@@ -96,16 +107,17 @@
     </div>
 
     <!-- D3 -->
-    <div class="w-full">
+    <div>
       <div class="flex items-center gap-3 mb-4">
         <span class="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider text-white" style="background:#c17f24;">D3</span>
         <h2 class="text-2xl font-extrabold" style="color:#000e27;">Community</h2>
       </div>
-      <div class="rounded-2xl overflow-hidden border w-full" style="border-color:#c4c6d0;">
-        <table class="w-full text-sm border-collapse">
+      <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
+        <table class="rankings-table text-sm">
+          <colgroup><col class="col-rank"/><col class="col-team"/><col class="col-conf"/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
           <thead>
             <tr style="background:#000e27;color:#fff;">
-              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider w-12">#</th>
+              <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
               <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
               <th class="px-4 py-3 text-left font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Conference</th>
               <th class="px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
