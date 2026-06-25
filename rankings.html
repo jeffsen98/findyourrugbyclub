@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link rel="icon" type="image/png" href="usarugby.png"/>
-<title>Rankings — USA Club Rugby Directory</title>
+<title>Rankings â€” USA Club Rugby Directory</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
@@ -20,10 +20,10 @@
       <img src="usarugby.png" alt="USA Rugby" class="h-10 w-auto object-contain"/>
     </a>
     <nav class="hidden md:flex items-center gap-6">
-      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="index.html">Home</a>
-      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="about.html">About</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="/">Home</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="about">About</a>
       <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="https://xplorer.rugby/" target="_blank">Competitions</a>
-      <a class="text-sm font-semibold transition-colors" style="color:#b22234;" href="rankings.html">Rankings</a>
+      <a class="text-sm font-semibold transition-colors" style="color:#b22234;" href="rankings">Rankings</a>
     </nav>
   </div>
 </header>
@@ -142,8 +142,8 @@
       <ol class="text-sm space-y-1 list-decimal list-inside" style="color:#44474f;">
         <li>Open your Google Sheet and add a new tab named <strong>Rankings</strong></li>
         <li>Use these headers in row 1: <code class="bg-gray-100 px-1 rounded">rank, team, division, conference, w, l, d</code></li>
-        <li>Fill in your data — set <strong>division</strong> to D1, D2, or D3 for each row</li>
-        <li>File → Share → Publish to web → select the <strong>Rankings</strong> tab → CSV → Publish</li>
+        <li>Fill in your data â€” set <strong>division</strong> to D1, D2, or D3 for each row</li>
+        <li>File â†’ Share â†’ Publish to web â†’ select the <strong>Rankings</strong> tab â†’ CSV â†’ Publish</li>
         <li>Paste the URL into <code class="bg-gray-100 px-1 rounded">rankings.html</code> at <code class="bg-gray-100 px-1 rounded">https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?gid=1696848951&single=true&output=csv</code></li>
       </ol>
     </div>
@@ -159,9 +159,9 @@
         <span class="text-xs" style="color:#747780;">© 2026 USA Club Rugby Directory</span>
         <span style="color:#747780;">|</span>
         <nav class="flex gap-4">
-          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="privacy.html">Privacy</a>
-          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="terms.html">Terms</a>
-          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="contact.html">Contact</a>
+          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="privacy">Privacy</a>
+          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="terms">Terms</a>
+          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="contact">Contact</a>
         </nav>
       </div>
       <p class="text-xs" style="color:#747780;">Powered by Google Sheets</p>
@@ -170,13 +170,13 @@
 </footer>
 
 <script>
-// ── CONFIGURATION ──────────────────────────────────────────
+// â”€â”€ CONFIGURATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // 1. Add a "Rankings" tab to your Google Sheet
 // 2. Row 1 headers: rank | team | division | conference | w | l | d
-// 3. File → Share → Publish to web → Rankings tab → CSV → Publish
+// 3. File â†’ Share â†’ Publish to web â†’ Rankings tab â†’ CSV â†’ Publish
 // 4. Paste URL below
 const RANKINGS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?gid=1696848951&single=true&output=csv';
-// ───────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function parseCSV(text) {
   const lines = text.trim().split('\n');
@@ -199,8 +199,8 @@ function buildRows(rows) {
         <td class="px-4 py-3 font-bold text-center text-sm" style="color:${isTop3 ? '#b22234' : '#747780'};">
           ${rank}
         </td>
-        <td class="px-4 py-3 font-semibold text-sm" style="color:#000e27;">${r.team || '—'}</td>
-        <td class="px-4 py-3 text-sm hidden sm:table-cell" style="color:#44474f;">${r.conference || '—'}</td>
+        <td class="px-4 py-3 font-semibold text-sm" style="color:#000e27;">${r.team || 'â€”'}</td>
+        <td class="px-4 py-3 text-sm hidden sm:table-cell" style="color:#44474f;">${r.conference || 'â€”'}</td>
         <td class="px-4 py-3 text-center font-semibold text-sm" style="color:#2e7d52;">${r.w || '0'}</td>
         <td class="px-4 py-3 text-center font-semibold text-sm" style="color:#b22234;">${r.l || '0'}</td>
         <td class="px-4 py-3 text-center text-sm" style="color:#44474f;">${r.d || '0'}</td>
