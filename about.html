@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About — USA Club Rugby Directory</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+</style>
+</head>
+<body class="bg-white text-gray-900">
+
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 border-b transition-all duration-200" style="background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-color:#c4c6d0;">
+  <div class="flex items-center gap-8">
+    <a href="index.html" class="flex items-center gap-2.5">
+      <img src="usarugby.png" alt="USA Rugby" class="h-10 w-auto object-contain"/>
+    </a>
+    <nav class="hidden md:flex items-center gap-6">
+      <a class="text-sm font-semibold transition-colors" style="color:#b22234;" href="about.html">About</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="https://xplorer.rugby/" target="_blank">Competitions</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="rankings.html">Rankings</a>
+    </nav>
+  </div>
+</header>
+
+<main class="pt-16">
+  <!-- Hero -->
+  <section class="flex flex-col items-center justify-center px-4 py-20 bg-white border-b" style="border-color:#c4c6d0;">
+    <div class="max-w-3xl w-full text-center space-y-5">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">About This Directory</h1>
+      <p class="text-lg max-w-xl mx-auto" style="color:#44474f;">Everything you need to know about the USA Club Rugby finder.</p>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="max-w-3xl mx-auto px-6 py-16 space-y-12">
+
+    <div class="space-y-4">
+      <h2 class="text-2xl font-bold" style="color:#000e27;">What is this?</h2>
+      <p class="text-base leading-relaxed" style="color:#44474f;">
+        The USA Club Rugby Directory is an interactive map and searchable database of club rugby teams across the United States. Whether you're new to the sport, relocating, or looking to find a team near you, this tool helps you discover clubs at every level — from D1 Premier down to Developmental.
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      <h2 class="text-2xl font-bold" style="color:#000e27;">How does it work?</h2>
+      <p class="text-base leading-relaxed" style="color:#44474f;">
+        Club data is maintained in a Google Sheet and published live to this site. Each club entry includes their name, location, division, home field, practice schedule, and contact information. The map automatically updates as new clubs are added or existing entries are edited.
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      <h2 class="text-2xl font-bold" style="color:#000e27;">Divisions</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="p-5 rounded-2xl border" style="border-color:#c4c6d0;">
+          <div class="text-xs font-black uppercase tracking-widest mb-1" style="color:#b22234;">D1 — Premier</div>
+          <p class="text-sm" style="color:#44474f;">The highest level of club rugby in the USA. Clubs compete at the national championship level.</p>
+        </div>
+        <div class="p-5 rounded-2xl border" style="border-color:#c4c6d0;">
+          <div class="text-xs font-black uppercase tracking-widest mb-1" style="color:#1a4f8a;">D2 — Championship</div>
+          <p class="text-sm" style="color:#44474f;">Highly competitive regional divisions with pathways to the national level.</p>
+        </div>
+        <div class="p-5 rounded-2xl border" style="border-color:#c4c6d0;">
+          <div class="text-xs font-black uppercase tracking-widest mb-1" style="color:#c17f24;">D3 — Community</div>
+          <p class="text-sm" style="color:#44474f;">Community-focused clubs that welcome players of all experience levels.</p>
+        </div>
+        <div class="p-5 rounded-2xl border" style="border-color:#c4c6d0;">
+          <div class="text-xs font-black uppercase tracking-widest mb-1" style="color:#2e7d52;">D4 — Developmental</div>
+          <p class="text-sm" style="color:#44474f;">Entry-level clubs focused on growing the game and developing new players.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <h2 class="text-2xl font-bold" style="color:#000e27;">Want to add or update your club?</h2>
+      <p class="text-base leading-relaxed" style="color:#44474f;">
+        If your club is missing or you need to update your information, reach out and we'll get it added to the directory.
+      </p>
+    </div>
+
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white border-t py-10 px-8" style="border-color:#c4c6d0;">
+  <div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="flex items-center gap-4">
+      <span class="text-xs" style="color:#747780;">© 2025 USA Club Rugby</span>
+      <span style="color:#747780;">|</span>
+      <nav class="flex gap-4">
+        <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="#">Privacy</a>
+        <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="#">Terms</a>
+        <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="#">Contact</a>
+      </nav>
+    </div>
+    <p class="text-xs" style="color:#747780;">Powered by Google Sheets + Leaflet.js</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,638 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Find Your Rugby Club — USA Club Rugby Directory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy: "#000e27",
+          "navy-mid": "#0d1f3c",
+          "navy-light": "#152a50",
+          red: "#b22234",
+          "red-light": "#cc2a3e",
+          silver: "#a8b4c8",
+          "outline-variant": "#c4c6d0",
+          "on-surface-variant": "#44474f",
+          outline: "#747780",
+        },
+        fontFamily: { sans: ["Inter", "sans-serif"] },
+      }
+    }
+  }
+</script>
 <style>
-  :root {
-    --navy: #0a1628;
-    --navy-mid: #0d1f3c;
-    --navy-light: #152a50;
-    --red: #b22234;
-    --red-light: #cc2a3e;
-    --white: #f0f4ff;
-    --silver: #a8b4c8;
-    --accent: #b22234;
-    --d1: #b22234;
-    --d2: #1a4f8a;
-    --d3: #c17f24;
-    --d4: #2e7d52;
-    --panel: rgba(10,22,40,0.97);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--navy);
-    color: var(--white);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  header {
-    background: var(--navy);
-    padding: 0 1.5rem;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 3px solid var(--red);
-    flex-shrink: 0;
-    z-index: 1000;
-    position: relative;
-  }
-
-  .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.6rem;
-    letter-spacing: 0.06em;
-    color: var(--white);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .logo .flag {
-    font-size: 1.4rem;
-    line-height: 1;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .search-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .search-input {
-    background: var(--navy-light);
-    border: 1px solid #1e3a6a;
-    color: var(--white);
-    padding: 6px 32px 6px 12px;
-    border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    width: 220px;
-    outline: none;
-  }
-
-  .search-input::placeholder { color: var(--silver); }
-  .search-input:focus { border-color: var(--red); }
-
-  .search-icon {
-    position: absolute;
-    right: 10px;
-    color: var(--silver);
-    font-size: 14px;
-    pointer-events: none;
-  }
-
-  .main {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-  }
-
-  #map {
-    flex: 1;
-    z-index: 1;
-  }
-
-  .sidebar {
-    width: 320px;
-    background: var(--panel);
-    border-left: 1px solid #1a2f50;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    flex-shrink: 0;
-    transition: width 0.25s ease, border 0.25s ease;
-  }
-
-  .sidebar.hidden {
-    width: 0;
-    border-left: none;
-  }
-
-  .sidebar.hidden > * { display: none; }
-
-  .sidebar-toggle {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    z-index: 600;
-    background: var(--panel);
-    border: 1px solid #1a3a6a;
-    border-right: none;
-    color: var(--red);
-    cursor: pointer;
-    padding: 12px 5px;
-    border-radius: 6px 0 0 6px;
-    font-size: 0.7rem;
-    line-height: 1;
-    transition: background 0.12s;
-    writing-mode: vertical-rl;
-    letter-spacing: 0.1em;
-    font-family: 'Bebas Neue', sans-serif;
-  }
-
-  .sidebar-toggle:hover { background: var(--navy-light); }
-
-  .sidebar-header {
-    padding: 1rem 1.25rem 0.75rem;
-    border-bottom: 1px solid #1a2f50;
-  }
-
-  .sidebar-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.1rem;
-    letter-spacing: 0.08em;
-    color: var(--white);
-    margin-bottom: 4px;
-  }
-
-  .sidebar-count {
-    font-size: 0.78rem;
-    color: var(--silver);
-  }
-
-  .filter-toolbar {
-    padding: 0.75rem 1.25rem;
-    border-bottom: 1px solid #1a2f50;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .filter-label {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--silver);
-    margin-bottom: 2px;
-  }
-
-  .filter-btns {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .filter-btn {
-    padding: 4px 12px;
-    border-radius: 4px;
-    border: 1.5px solid #1e3a6a;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-    background: transparent;
-    color: var(--silver);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .filter-btn:hover { border-color: #4a6a9a; color: var(--white); }
-  .filter-btn[data-div="all"].active { background: var(--red); border-color: var(--red); color: #fff; }
-  .filter-btn[data-div="D1"].active { background: var(--d1); border-color: var(--d1); color: #fff; }
-  .filter-btn[data-div="D2"].active { background: var(--d2); border-color: var(--d2); color: #fff; }
-  .filter-btn[data-div="D3"].active { background: var(--d3); border-color: var(--d3); color: #fff; }
-  .filter-btn[data-div="D4"].active { background: var(--d4); border-color: var(--d4); color: #fff; }
-
-  .team-list {
-    overflow-y: auto;
-    flex: 1;
-  }
-
-  .team-list::-webkit-scrollbar { width: 4px; }
-  .team-list::-webkit-scrollbar-track { background: transparent; }
-  .team-list::-webkit-scrollbar-thumb { background: #1e3a6a; border-radius: 2px; }
-
-  .team-item {
-    padding: 0.85rem 1.25rem;
-    border-bottom: 1px solid #0f1e38;
-    cursor: pointer;
-    transition: background 0.12s;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .team-item:hover { background: var(--navy-light); }
-  .team-item.active { background: #101f3a; border-left: 3px solid var(--red); }
-
-  .div-badge {
-    width: 32px;
-    height: 32px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-    flex-shrink: 0;
-  }
-
-  .div-D1 { background: rgba(178,34,52,0.2); color: var(--d1); border: 1px solid rgba(178,34,52,0.5); }
-  .div-D2 { background: rgba(26,79,138,0.2); color: #5a9fd4; border: 1px solid rgba(26,79,138,0.5); }
-  .div-D3 { background: rgba(193,127,36,0.2); color: var(--d3); border: 1px solid rgba(193,127,36,0.5); }
-  .div-D4 { background: rgba(46,125,82,0.2); color: var(--d4); border: 1px solid rgba(46,125,82,0.5); }
-
-  .team-info { flex: 1; min-width: 0; }
-
-  .team-name {
-    font-weight: 600;
-    font-size: 0.88rem;
-    color: var(--white);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .team-meta {
-    font-size: 0.75rem;
-    color: var(--silver);
-    margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .detail-panel {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    width: 310px;
-    background: var(--panel);
-    border-radius: 8px;
-    border: 1px solid #1a3a6a;
-    border-left: 4px solid var(--red);
-    z-index: 500;
-    overflow: hidden;
-    display: none;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-  }
-
-  .detail-panel.show { display: block; }
-
-  .detail-header {
-    padding: 1rem 1.25rem 0.75rem;
-    border-bottom: 1px solid #1a2f50;
-    background: var(--navy-mid);
-  }
-
-  .detail-div {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 4px;
-  }
-
-  .detail-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.45rem;
-    letter-spacing: 0.04em;
-    color: var(--white);
-    line-height: 1.1;
-  }
-
-  .detail-city {
-    font-size: 0.8rem;
-    color: var(--silver);
-    margin-top: 2px;
-  }
-
-  .detail-body { padding: 0.85rem 1.25rem; }
-
-  .detail-row {
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-    margin-bottom: 8px;
-    font-size: 0.82rem;
-  }
-
-  .detail-label {
-    color: var(--silver);
-    min-width: 90px;
-    flex-shrink: 0;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding-top: 1px;
-  }
-
-  .detail-value { color: var(--white); }
-
-  .detail-close {
-    position: absolute;
-    top: 10px;
-    right: 12px;
-    background: none;
-    border: none;
-    color: var(--silver);
-    cursor: pointer;
-    font-size: 1.1rem;
-    line-height: 1;
-    padding: 4px;
-  }
-
-  .detail-close:hover { color: var(--white); }
-
-  .detail-link {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 6px 14px;
-    background: var(--red);
-    color: #fff;
-    border-radius: 5px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .detail-link:hover { background: var(--red-light); }
-
-  .map-legend {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: var(--panel);
-    border: 1px solid #1a3a6a;
-    border-radius: 8px;
-    padding: 10px 14px;
-    z-index: 400;
-    font-size: 0.75rem;
-  }
-
-  .legend-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 0.08em;
-    color: var(--white);
-    margin-bottom: 6px;
-  }
-
-  .legend-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-    color: var(--silver);
-  }
-
-  .legend-dot {
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .loading-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(10,22,40,0.88);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .loading-text {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.2rem;
-    letter-spacing: 0.08em;
-    color: var(--white);
-  }
-
-  .spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid #1a3a6a;
-    border-top-color: var(--red);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .no-results {
-    padding: 2rem 1.25rem;
-    text-align: center;
-    color: var(--silver);
-    font-size: 0.85rem;
-  }
-
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: 3000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .modal-backdrop.hidden { display: none; }
-
-  .modal {
-    background: var(--navy-mid);
-    border: 1px solid #1a3a6a;
-    border-top: 4px solid var(--red);
-    border-radius: 10px;
-    width: 420px;
-    max-width: 90vw;
-    padding: 2rem;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.7);
-  }
-
-  .modal-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.8rem;
-    letter-spacing: 0.06em;
-    color: var(--white);
-    margin-bottom: 0.4rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .modal-subtitle {
-    font-size: 0.82rem;
-    color: var(--silver);
-    margin-bottom: 1.25rem;
-  }
-
-  .modal-steps {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 1.5rem;
-  }
-
-  .modal-steps li {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    font-size: 0.85rem;
-    color: var(--white);
-  }
-
-  .step-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    background: rgba(178,34,52,0.15);
-    border: 1px solid rgba(178,34,52,0.35);
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .modal-btn {
-    width: 100%;
-    padding: 10px;
-    background: var(--red);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1rem;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .modal-btn:hover { background: var(--red-light); }
-
+  body { font-family: 'Inter', sans-serif; }
+  .search-input-shadow { box-shadow: 0 1px 6px rgba(32,33,36,0.28); }
+  .search-input-shadow:focus-within { box-shadow: 0 4px 12px rgba(32,33,36,0.18); }
+  #map { width: 100%; height: 100%; min-height: 520px; }
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: #c4c6d0; border-radius: 10px; }
   .leaflet-popup-content-wrapper {
-    background: var(--navy-mid) !important;
+    background: #0d1f3c !important;
     border: 1px solid #1a3a6a !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.6) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
   }
-  .leaflet-popup-tip { background: var(--navy-mid) !important; }
-  .leaflet-popup-content { color: var(--white) !important; margin: 10px 14px !important; }
-  .popup-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.04em; }
-  .popup-meta { font-size: 0.78rem; color: var(--silver); margin-top: 2px; }
+  .leaflet-popup-tip { background: #0d1f3c !important; }
+  .leaflet-popup-content { color: #f0f4ff !important; margin: 10px 14px !important; }
+  .popup-name { font-weight: 700; font-size: 1rem; }
+  .popup-meta { font-size: 0.78rem; color: #a8b4c8; margin-top: 2px; }
   .popup-open {
     display: inline-block; margin-top: 6px; padding: 4px 10px;
-    background: var(--red); color: #fff; border-radius: 4px;
+    background: #b22234; color: #fff; border-radius: 4px;
     font-size: 0.72rem; font-weight: 700; cursor: pointer; border: none;
     text-transform: uppercase; letter-spacing: 0.04em;
   }
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+  .modal-backdrop.hidden { display: none; }
 </style>
 </head>
-<body>
+<body class="bg-white text-navy">
 
-<header>
-  <div class="logo">
-    <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="18" cy="18" rx="14" ry="9" fill="#b22234" transform="rotate(-35 18 18)"/>
-      <ellipse cx="18" cy="18" rx="11" ry="6.5" fill="#fff" transform="rotate(-35 18 18)"/>
-      <ellipse cx="18" cy="18" rx="8" ry="4" fill="#1a4f8a" transform="rotate(-35 18 18)"/>
-      <line x1="14" y1="14" x2="22" y2="22" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
-      <line x1="15.5" y1="12.5" x2="15.5" y2="15.5" stroke="#fff" stroke-width="1" stroke-linecap="round"/>
-      <line x1="17.5" y1="14.5" x2="17.5" y2="17.5" stroke="#fff" stroke-width="1" stroke-linecap="round"/>
-      <line x1="19.5" y1="16.5" x2="19.5" y2="19.5" stroke="#fff" stroke-width="1" stroke-linecap="round"/>
-      <line x1="21.5" y1="18.5" x2="21.5" y2="21.5" stroke="#fff" stroke-width="1" stroke-linecap="round"/>
-    </svg>
-    Find Your Rugby Club
+<!-- Welcome Modal -->
+<div class="modal-backdrop" id="welcomeModal">
+  <div class="bg-navy-mid rounded-2xl w-full max-w-md mx-4 p-8 shadow-2xl" style="border: 1px solid #1a3a6a; border-top: 4px solid #b22234;">
+    <div class="text-2xl font-extrabold text-white mb-1 flex items-center gap-3"><img src="usarugby.png" alt="USA Rugby" class="h-10 w-auto object-contain"/> Find Your Rugby Club</div>
+    <p class="text-sm text-silver mb-5">USA Club Rugby Directory — here's how to get started:</p>
+    <ul class="space-y-3 mb-6">
+      <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">🗺</span><span>Browse the map to see clubs across the country. Click any marker to view details.</span></li>
+      <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">🏷</span><span>Use the <strong>Division filter</strong> buttons to filter by level.</span></li>
+      <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">🔍</span><span>Search by club name, city, or state using the search bar.</span></li>
+      <li class="flex gap-3 text-sm text-white"><span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">📋</span><span>The <strong>Club Directory</strong> lists all matching clubs — click any to fly to it on the map.</span></li>
+    </ul>
+    <button id="welcomeOk" class="w-full py-2.5 font-bold rounded-lg text-white transition-colors" style="background:#b22234;">OK, Got It</button>
   </div>
-  <div class="header-right">
-    <div class="search-wrap">
-      <input class="search-input" type="text" placeholder="Search clubs or city…" id="searchInput">
-      <span class="search-icon">⌕</span>
+</div>
+
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 border-b transition-all duration-200" style="background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-color:#c4c6d0;">
+  <div class="flex items-center gap-8">
+    <div class="flex items-center gap-2.5">
+      <img src="usarugby.png" alt="USA Rugby" class="h-10 w-auto object-contain"/>
     </div>
+    <nav class="hidden md:flex items-center gap-6">
+      <a class="text-sm font-semibold hover:text-red transition-colors" style="color:#44474f;" href="about.html">About</a>
+      <a class="text-sm font-semibold hover:text-red transition-colors" style="color:#44474f;" href="https://xplorer.rugby/" target="_blank">Competitions</a>
+      <a class="text-sm font-semibold hover:text-red transition-colors" style="color:#44474f;" href="rankings.html">Rankings</a>
+    </nav>
   </div>
 </header>
 
-<div class="modal-backdrop" id="welcomeModal">
-  <div class="modal">
-    <div class="modal-title">🇺🇸 Find Your Rugby Club</div>
-    <div class="modal-subtitle">USA Club Rugby Directory — here's how to get started:</div>
-    <ul class="modal-steps">
-      <li><span class="step-icon">🗺</span> <span>Browse the map to see clubs across the country. Click any marker to view details.</span></li>
-      <li><span class="step-icon">🏷</span> <span>Use the <strong>Division filter</strong> in the sidebar to filter by D1–D4 level.</span></li>
-      <li><span class="step-icon">🔍</span> <span>Search by club name, city, or state using the search box in the top right.</span></li>
-      <li><span class="step-icon">📋</span> <span>The <strong>Club Directory</strong> sidebar lists all matching clubs — click any to fly to it on the map.</span></li>
-    </ul>
-    <button class="modal-btn" id="welcomeOk">OK, Got It</button>
-  </div>
-</div>
-
-<div class="main">
-  <div id="mapWrapper" style="position:relative; flex:1; display:flex;">
-    <div id="map"></div>
-    <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">◀ Directory</button>
-
-    <div class="loading-overlay" id="loadingOverlay">
-      <div class="spinner"></div>
-      <div class="loading-text">Loading clubs…</div>
-    </div>
-
-    <div class="map-legend">
-      <div class="legend-title">Division</div>
-      <div class="legend-row"><div class="legend-dot" style="background:var(--d1)"></div> D1 — Premier</div>
-      <div class="legend-row"><div class="legend-dot" style="background:var(--d2)"></div> D2 — Championship</div>
-      <div class="legend-row"><div class="legend-dot" style="background:var(--d3)"></div> D3 — Community</div>
-      <div class="legend-row"><div class="legend-dot" style="background:var(--d4)"></div> D4 — Developmental</div>
-    </div>
-
-    <div class="detail-panel" id="detailPanel">
-      <button class="detail-close" id="detailClose">✕</button>
-      <div class="detail-header">
-        <div class="detail-div" id="detailDiv"></div>
-        <div class="detail-name" id="detailName"></div>
-        <div class="detail-city" id="detailCity"></div>
-      </div>
-      <div class="detail-body" id="detailBody"></div>
-    </div>
-  </div>
-
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-title">Club Directory</div>
-      <div class="sidebar-count" id="sidebarCount">Loading…</div>
-    </div>
-    <div class="filter-toolbar">
-      <div class="filter-label">Filter by Division</div>
-      <div class="filter-btns">
-        <button class="filter-btn active" data-div="all">All</button>
-        <button class="filter-btn" data-div="D1">D1</button>
-        <button class="filter-btn" data-div="D2">D2</button>
-        <button class="filter-btn" data-div="D3">D3</button>
-        <button class="filter-btn" data-div="D4">D4</button>
+<main class="pt-16">
+  <!-- Hero Search -->
+  <section class="flex flex-col items-center justify-center px-4 py-16 bg-white border-b" style="border-color:#c4c6d0;">
+    <div class="max-w-3xl w-full text-center space-y-6">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">Find Your Local Rugby Club</h1>
+      <p class="text-lg max-w-xl mx-auto" style="color:#44474f;">Explore active clubs across the United States. Find a team and get on the pitch.</p>
+      <div class="max-w-2xl mx-auto">
+        <div class="search-input-shadow flex items-center bg-white rounded-full h-14 px-6 transition-all" style="border:1px solid #c4c6d0;">
+          <span style="color:#747780;font-size:1.2rem;">⌕</span>
+          <input id="searchInput" class="flex-1 bg-transparent border-none focus:ring-0 text-base px-4 outline-none" placeholder="Enter city, state, or club name..." style="color:#000e27;" type="text"/>
+        </div>
+        <div class="flex justify-center gap-3 mt-5 flex-wrap">
+          <button class="filter-btn active px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="all">All Divisions</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D1">D1 — Premier</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D2">D2 — Championship</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D3">D3 — Community</button>
+          <button class="filter-btn px-4 py-1.5 rounded-full border text-xs font-bold transition-all" data-div="D4">D4 — Developmental</button>
+        </div>
       </div>
     </div>
-    <div class="team-list" id="teamList"></div>
+  </section>
+
+  <!-- Content Grid -->
+  <section class="max-w-[1440px] mx-auto px-6 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- Club List -->
+      <div class="lg:col-span-4 flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-bold" style="color:#000e27;">Club Directory</h2>
+          <span id="sidebarCount" class="text-sm" style="color:#747780;">Loading…</span>
+        </div>
+        <div id="teamList" class="space-y-3 overflow-y-auto custom-scrollbar" style="max-height:560px;"></div>
+      </div>
+
+      <!-- Map -->
+      <div class="lg:col-span-8">
+        <div class="relative rounded-2xl overflow-hidden shadow-sm" style="height:580px;border:1px solid #c4c6d0;">
+          <div id="map"></div>
+
+          <!-- Loading overlay -->
+          <div id="loadingOverlay" class="absolute inset-0 flex flex-col items-center justify-center gap-3" style="background:rgba(0,14,39,0.82);z-index:2000;">
+            <div class="w-9 h-9 rounded-full animate-spin" style="border:4px solid #1a3a6a;border-top-color:#b22234;"></div>
+            <span class="font-bold tracking-widest text-sm uppercase text-white">Loading clubs…</span>
+          </div>
+
+          <!-- Detail panel -->
+          <div id="detailPanel" class="absolute bottom-4 left-4 w-72 rounded-xl overflow-hidden shadow-2xl hidden" style="background:#0d1f3c;border:1px solid #1a3a6a;border-left:4px solid #b22234;z-index:500;">
+            <button id="detailClose" class="absolute top-2 right-3 text-lg leading-none" style="color:#a8b4c8;background:none;border:none;cursor:pointer;">✕</button>
+            <div class="p-4 border-b" style="background:#000e27;border-color:#1a3a6a;">
+              <div id="detailDiv" class="text-xs font-bold uppercase tracking-widest mb-1"></div>
+              <div id="detailName" class="text-white font-extrabold text-lg leading-tight"></div>
+              <div id="detailCity" class="text-xs mt-1" style="color:#a8b4c8;"></div>
+            </div>
+            <div id="detailBody" class="p-4 text-sm"></div>
+          </div>
+
+          <!-- Legend -->
+          <div class="absolute top-3 right-3 rounded-xl px-3 py-2 text-xs" style="background:rgba(13,31,60,0.95);border:1px solid #1a3a6a;z-index:400;color:#a8b4c8;">
+            <div class="font-bold text-white mb-1.5 uppercase tracking-wider" style="font-size:10px;">Division</div>
+            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#b22234;"></span> D1 — Premier</div>
+            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#1a4f8a;"></span> D2 — Championship</div>
+            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#c17f24;"></span> D3 — Community</div>
+            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#2e7d52;"></span> D4 — Developmental</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white border-t py-10 px-8 mt-4" style="border-color:#c4c6d0;">
+  <div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="flex items-center gap-4">
+      <span class="text-xs" style="color:#747780;">© 2025 USA Club Rugby</span>
+      <span style="color:#747780;">|</span>
+      <nav class="flex gap-4">
+        <a class="text-xs hover:text-navy transition-colors" style="color:#747780;" href="#">Privacy</a>
+        <a class="text-xs hover:text-navy transition-colors" style="color:#747780;" href="#">Terms</a>
+        <a class="text-xs hover:text-navy transition-colors" style="color:#747780;" href="#">Contact</a>
+      </nav>
+    </div>
+    <p class="text-xs" style="color:#747780;">Powered by Google Sheets + Leaflet.js</p>
   </div>
-</div>
+</footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -654,28 +194,26 @@ const DEMO_DATA = [
 ];
 
 const COLORS = { D1: '#b22234', D2: '#1a4f8a', D3: '#c17f24', D4: '#2e7d52' };
+const DIV_STYLE = {
+  D1: 'background:rgba(178,34,52,0.12);color:#b22234;border:1px solid rgba(178,34,52,0.4);',
+  D2: 'background:rgba(26,79,138,0.12);color:#1a4f8a;border:1px solid rgba(26,79,138,0.4);',
+  D3: 'background:rgba(193,127,36,0.12);color:#c17f24;border:1px solid rgba(193,127,36,0.4);',
+  D4: 'background:rgba(46,125,82,0.12);color:#2e7d52;border:1px solid rgba(46,125,82,0.4);',
+};
 
 const map = L.map('map', { zoomControl: true }).setView([39.5, -98.35], 4);
-
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution: '© OpenStreetMap © CARTO',
-  maxZoom: 19
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap © CARTO', maxZoom: 19
 }).addTo(map);
 
-let allTeams = [];
-let markers = {};
-let activeDiv = 'all';
-let searchTerm = '';
-let activeTeamId = null;
+let allTeams = [], markers = {}, activeDiv = 'all', searchTerm = '', activeTeamId = null;
 
 function createMarkerIcon(division) {
   const color = COLORS[division] || '#888';
   return L.divIcon({
     className: '',
-    html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid rgba(255,255,255,0.5);box-shadow:0 2px 6px rgba(0,0,0,0.5)"></div>`,
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
-    popupAnchor: [0, -10]
+    html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid rgba(255,255,255,0.6);box-shadow:0 2px 6px rgba(0,0,0,0.4)"></div>`,
+    iconSize: [14, 14], iconAnchor: [7, 7], popupAnchor: [0, -10]
   });
 }
 
@@ -685,9 +223,7 @@ function parseCSV(text) {
   return lines.slice(1).map(line => {
     const vals = line.match(/(".*?"|[^,]+)(?=,|$)/g) || [];
     const obj = {};
-    headers.forEach((h, i) => {
-      obj[h] = (vals[i] || '').replace(/^"|"$/g, '').trim();
-    });
+    headers.forEach((h, i) => { obj[h] = (vals[i] || '').replace(/^"|"$/g, '').trim(); });
     return obj;
   });
 }
@@ -724,8 +260,7 @@ function renderAll() {
   markers = {};
 
   filtered.forEach(t => {
-    const lat = parseFloat(t.lat);
-    const lng = parseFloat(t.lng);
+    const lat = parseFloat(t.lat), lng = parseFloat(t.lng);
     if (!lat || !lng) return;
     const m = L.marker([lat, lng], { icon: createMarkerIcon(t.division) }).addTo(map);
     m.bindPopup(`
@@ -736,20 +271,24 @@ function renderAll() {
     markers[t._id] = m;
   });
 
-  const list = document.getElementById('teamList');
   document.getElementById('sidebarCount').textContent = `${filtered.length} club${filtered.length !== 1 ? 's' : ''}`;
 
+  const list = document.getElementById('teamList');
   if (filtered.length === 0) {
-    list.innerHTML = '<div class="no-results">No clubs match your search.</div>';
+    list.innerHTML = '<div style="text-align:center;color:#747780;padding:2rem;font-size:0.875rem;">No clubs match your search.</div>';
     return;
   }
 
   list.innerHTML = filtered.map(t => `
-    <div class="team-item ${t._id === activeTeamId ? 'active' : ''}" onclick="openDetail(${t._id})" data-id="${t._id}">
-      <div class="div-badge div-${t.division}">${t.division}</div>
-      <div class="team-info">
-        <div class="team-name">${t.name}</div>
-        <div class="team-meta">${t.city}, ${t.state}${t.conference ? ' · ' + t.conference : ''}</div>
+    <div onclick="openDetail(${t._id})" data-id="${t._id}" style="padding:1rem;background:#fff;border:1px solid ${t._id === activeTeamId ? '#000e27' : '#c4c6d0'};border-radius:1rem;cursor:pointer;transition:all 0.15s;${t._id === activeTeamId ? 'box-shadow:0 4px 12px rgba(0,0,0,0.1);' : ''}" onmouseover="this.style.borderColor='#000e27';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.borderColor='${t._id === activeTeamId ? '#000e27' : '#c4c6d0'}';this.style.boxShadow='${t._id === activeTeamId ? '0 4px 12px rgba(0,0,0,0.1)' : 'none'}'">
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0;${DIV_STYLE[t.division] || 'background:#f0f0f0;color:#333;border:1px solid #ddd;'}">
+          ${t.division || '?'}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;color:#000e27;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.name}</div>
+          <div style="font-size:0.75rem;color:#747780;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.city || ''}${t.state ? ', ' + t.state : ''}${t.conference ? ' · ' + t.conference : ''}</div>
+        </div>
       </div>
     </div>
   `).join('');
@@ -759,17 +298,15 @@ function openDetail(id) {
   const t = allTeams.find(x => x._id === id);
   if (!t) return;
   activeTeamId = id;
-
-  document.querySelectorAll('.team-item').forEach(el => {
-    el.classList.toggle('active', parseInt(el.dataset.id) === id);
-  });
+  renderAll();
 
   const color = COLORS[t.division] || '#888';
-  document.getElementById('detailPanel').style.borderLeftColor = color;
-  document.getElementById('detailDiv').textContent = `${t.division} · ${t.conference || ''}`;
+  const panel = document.getElementById('detailPanel');
+  panel.style.borderLeftColor = color;
+  document.getElementById('detailDiv').textContent = `${t.division || ''} · ${t.conference || ''}`;
   document.getElementById('detailDiv').style.color = color;
   document.getElementById('detailName').textContent = t.name;
-  document.getElementById('detailCity').textContent = `${t.city}, ${t.state}`;
+  document.getElementById('detailCity').textContent = `${t.city || ''}, ${t.state || ''}`;
 
   const rows = [
     t.homeField && { label: 'Home Field', value: t.homeField },
@@ -780,14 +317,14 @@ function openDetail(id) {
 
   document.getElementById('detailBody').innerHTML =
     rows.map(r => `
-      <div class="detail-row">
-        <span class="detail-label">${r.label}</span>
-        <span class="detail-value">${r.value}</span>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <span style="color:#a8b4c8;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;min-width:80px;padding-top:1px;flex-shrink:0;">${r.label}</span>
+        <span style="color:#f0f4ff;font-size:0.75rem;">${r.value}</span>
       </div>
     `).join('') +
-    (t.website ? `<a class="detail-link" href="https://${t.website.replace(/^https?:\/\//, '')}" target="_blank">Visit Website ↗</a>` : '');
+    (t.website ? `<a style="display:inline-block;margin-top:8px;padding:6px 14px;background:#b22234;color:#fff;border-radius:8px;font-size:0.75rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.05em;" href="https://${t.website.replace(/^https?:\/\//, '')}" target="_blank">Visit Website ↗</a>` : '');
 
-  document.getElementById('detailPanel').classList.add('show');
+  panel.classList.remove('hidden');
 
   const lat = parseFloat(t.lat), lng = parseFloat(t.lng);
   if (lat && lng) {
@@ -795,49 +332,59 @@ function openDetail(id) {
     if (markers[id]) markers[id].openPopup();
   }
 
-  const el = document.querySelector(`.team-item[data-id="${id}"]`);
+  const el = document.querySelector(`#teamList [data-id="${id}"]`);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 document.getElementById('detailClose').addEventListener('click', () => {
-  document.getElementById('detailPanel').classList.remove('show');
+  document.getElementById('detailPanel').classList.add('hidden');
   activeTeamId = null;
-  document.querySelectorAll('.team-item').forEach(el => el.classList.remove('active'));
+  renderAll();
 });
 
+// Filter buttons
 document.querySelectorAll('.filter-btn').forEach(btn => {
+  const isActive = btn.classList.contains('active');
+  btn.style.cssText = isActive
+    ? 'background:#000e27;color:#fff;border-color:#000e27;'
+    : 'background:transparent;color:#44474f;border-color:#c4c6d0;';
+
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.style.cssText = 'background:transparent;color:#44474f;border-color:#c4c6d0;';
+      b.classList.remove('active');
+    });
+    btn.style.cssText = 'background:#000e27;color:#fff;border-color:#000e27;';
     btn.classList.add('active');
     activeDiv = btn.dataset.div;
     renderAll();
+  });
+
+  btn.addEventListener('mouseover', () => {
+    if (!btn.classList.contains('active')) btn.style.borderColor = '#b22234';
+  });
+  btn.addEventListener('mouseout', () => {
+    if (!btn.classList.contains('active')) btn.style.borderColor = '#c4c6d0';
   });
 });
 
 let searchTimeout;
 document.getElementById('searchInput').addEventListener('input', e => {
   clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => {
-    searchTerm = e.target.value;
-    renderAll();
-  }, 200);
+  searchTimeout = setTimeout(() => { searchTerm = e.target.value; renderAll(); }, 200);
 });
 
 document.getElementById('welcomeOk').addEventListener('click', () => {
   document.getElementById('welcomeModal').classList.add('hidden');
 });
 
-loadTeams();
-
-const sidebar = document.getElementById('sidebar');
-const toggleBtn = document.getElementById('sidebarToggle');
-
-toggleBtn.addEventListener('click', () => {
-  const isHidden = sidebar.classList.toggle('hidden');
-  toggleBtn.classList.toggle('collapsed', isHidden);
-  toggleBtn.textContent = isHidden ? '▶ Directory' : '◀ Directory';
-  setTimeout(() => map.invalidateSize(), 260);
+window.addEventListener('scroll', () => {
+  const header = document.querySelector('header');
+  if (window.scrollY > 50) header.style.boxShadow = '0 1px 4px rgba(0,0,0,0.1)';
+  else header.style.boxShadow = 'none';
 });
+
+loadTeams();
 </script>
 </body>
 </html>
