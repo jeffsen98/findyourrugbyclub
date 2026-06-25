@@ -36,6 +36,7 @@
   .custom-scrollbar::-webkit-scrollbar { width: 4px; }
   .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
   .custom-scrollbar::-webkit-scrollbar-thumb { background: #c4c6d0; border-radius: 10px; }
+  @media (min-width: 1024px) { #teamList { max-height: 560px; overflow-y: auto; } }
   .leaflet-popup-content-wrapper {
     background: #0d1f3c !important;
     border: 1px solid #1a3a6a !important;
@@ -159,7 +160,7 @@
           <h2 class="text-xl font-bold" style="color:#000e27;">Club Directory</h2>
           <span id="sidebarCount" class="text-sm" style="color:#747780;">Loading...</span>
         </div>
-        <div id="teamList" class="space-y-3 overflow-y-auto custom-scrollbar" style="max-height:560px;"></div>
+        <div id="teamList" class="space-y-3 lg:overflow-y-auto lg:custom-scrollbar" style=""></div>
       </div>
 
       <!-- Map (collapsible on mobile) -->
@@ -213,7 +214,6 @@
         <nav class="flex gap-4">
           <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="privacy">Privacy</a>
           <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="terms">Terms</a>
-          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="contact">Contact</a>
         </nav>
       </div>
       <p class="text-xs" style="color:#747780;">Powered by Google Sheets + Leaflet.js</p>
