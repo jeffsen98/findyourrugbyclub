@@ -226,7 +226,7 @@ async function loadTeams() {
   } catch (e) {
     console.warn('Could not load from Google Sheet:', e);
   }
-  allTeams = teams.map((t, i) => ({ ...t, _id: i }));
+  allTeams = teams.filter(t => (t.name || '').trim() !== '' && (t.lat || '').trim() !== '').map((t, i) => ({ ...t, _id: i }));
   document.getElementById('loadingOverlay').style.display = 'none';
   renderAll();
 }
