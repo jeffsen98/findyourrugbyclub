@@ -32,6 +32,7 @@
     <div class="max-w-4xl w-full text-center space-y-4">
       <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">Club Rankings</h1>
       <p class="text-lg max-w-xl mx-auto" style="color:#44474f;">Current standings across all divisions. Updated regularly.</p>
+      <p class="text-sm max-w-2xl mx-auto mt-2" style="color:#747780;">Rankings are determined by a combination of strength of schedule, point differential, roster depth, and other key factors in the evaluation process.</p>
     </div>
   </section>
 
@@ -93,12 +94,12 @@
     </div>
 
     <!-- D3 -->
-    <div>
+    <div class="w-full">
       <div class="flex items-center gap-3 mb-4">
         <span class="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider text-white" style="background:#c17f24;">D3</span>
         <h2 class="text-2xl font-extrabold" style="color:#000e27;">Community</h2>
       </div>
-      <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
+      <div class="rounded-2xl overflow-hidden border w-full" style="border-color:#c4c6d0;">
         <table class="w-full text-sm border-collapse">
           <thead>
             <tr style="background:#000e27;color:#fff;">
@@ -178,12 +179,11 @@ function buildRows(rows) {
   if (rows.length === 0) return null;
   return rows.map((r, i) => {
     const rank = parseInt(r.rank || i + 1);
-    const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : null;
     const isTop3 = rank <= 3;
     return `
       <tr style="border-bottom:1px solid #e5e7eb;background:${isTop3 ? '#fafbff' : i % 2 === 0 ? '#fff' : '#f9fafb'};">
         <td class="px-4 py-3 font-bold text-center text-sm" style="color:${isTop3 ? '#b22234' : '#747780'};">
-          ${medal || rank}
+          ${rank}
         </td>
         <td class="px-4 py-3 font-semibold text-sm" style="color:#000e27;">${r.team || '—'}</td>
         <td class="px-4 py-3 text-sm hidden sm:table-cell" style="color:#44474f;">${r.conference || '—'}</td>
