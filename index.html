@@ -431,7 +431,14 @@ function openDetail(id) {
   }
 
   const el = document.querySelector(`#teamList [data-id="${id}"]`);
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  if (el) {
+    if (window.innerWidth < 1024) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: 'smooth' });
+    } else {
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
 }
 
 document.querySelectorAll('.filter-btn').forEach(btn => {
