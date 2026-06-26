@@ -309,7 +309,7 @@ function renderAll() {
     const isOpen = t._id === activeTeamId;
     const color = COLORS[t.division] || '#888';
     const rows = [
-      t.practiceLocation && { label: 'Practice', value: t.practiceLocation },
+      t.practicelocation && { label: 'Practice', value: t.practicelocation },
       t.contact && { label: 'Contact', value: t.contact },
     ].filter(Boolean);
     const detailHtml = rows.map(r => `
