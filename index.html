@@ -179,15 +179,6 @@
           </div>
 
           <!-- Detail panel -->
-          <div id="detailPanel" class="absolute bottom-4 left-4 w-72 rounded-xl overflow-hidden shadow-2xl hidden" style="background:#0d1f3c;border:1px solid #1a3a6a;border-left:4px solid #b22234;z-index:500;">
-            <button id="detailClose" class="absolute top-2 right-3 text-lg leading-none" style="color:#a8b4c8;background:none;border:none;cursor:pointer;">&#x2715;</button>
-            <div class="p-4 border-b" style="background:#000e27;border-color:#1a3a6a;">
-              <div id="detailDiv" class="text-xs font-bold uppercase tracking-widest mb-1"></div>
-              <div id="detailName" class="text-white font-extrabold text-lg leading-tight"></div>
-              <div id="detailCity" class="text-xs mt-1" style="color:#a8b4c8;"></div>
-            </div>
-            <div id="detailBody" class="p-4 text-sm"></div>
-          </div>
 
           <!-- Legend -->
           <div class="absolute top-3 right-3 rounded-xl px-3 py-2 text-xs" style="background:rgba(13,31,60,0.95);border:1px solid #1a3a6a;z-index:400;color:#a8b4c8;">
@@ -318,9 +309,24 @@ function renderAll() {
     return;
   }
 
-  list.innerHTML = filtered.map(t => `
-    <div onclick="openDetail(${t._id})" data-id="${t._id}" style="padding:1rem;background:#fff;border:1px solid ${t._id === activeTeamId ? '#000e27' : '#c4c6d0'};border-radius:1rem;cursor:pointer;transition:all 0.15s;${t._id === activeTeamId ? 'box-shadow:0 4px 12px rgba(0,0,0,0.1);' : ''}" onmouseover="this.style.borderColor='#000e27';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.borderColor='${t._id === activeTeamId ? '#000e27' : '#c4c6d0'}';this.style.boxShadow='${t._id === activeTeamId ? '0 4px 12px rgba(0,0,0,0.1)' : 'none'}'">
-      <div style="display:flex;align-items:flex-start;gap:12px;">
+  list.innerHTML = filtered.map(t => {
+    const isOpen = t._id === activeTeamId;
+    const color = COLORS[t.division] || '#888';
+    const rows = [
+      t.homeField && { label: 'Home Field', value: t.homeField },
+      t.practiceLocation && { label: 'Practice', value: t.practiceLocation },
+      t.founded && { label: 'Founded', value: t.founded },
+      t.contact && { label: 'Contact', value: t.contact },
+    ].filter(Boolean);
+    const detailHtml = rows.map(r => `
+      <div style="display:flex;gap:8px;margin-bottom:6px;">
+        <span style="color:#a8b4c8;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;min-width:76px;flex-shrink:0;padding-top:1px;">${r.label}</span>
+        <span style="color:#f0f4ff;font-size:0.75rem;line-height:1.4;">${r.value}</span>
+      </div>`).join('') +
+      (t.website ? `<a style="display:inline-block;margin-top:10px;padding:5px 14px;background:#b22234;color:#fff;border-radius:8px;font-size:0.75rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.05em;" href="https://${t.website.replace(/^https?:\/\//,'')}" target="_blank">Visit Website</a>` : '');
+    return `
+    <div data-id="${t._id}" style="background:#fff;border:1px solid ${isOpen ? '#000e27' : '#c4c6d0'};border-radius:1rem;overflow:hidden;transition:border-color 0.15s;${isOpen ? 'box-shadow:0 4px 12px rgba(0,0,0,0.1);' : ''}" onmouseover="if(!${isOpen})this.style.borderColor='#000e27'" onmouseout="if(!${isOpen})this.style.borderColor='#c4c6d0'">
+      <div onclick="openDetail(${t._id})" style="padding:1rem;cursor:pointer;display:flex;align-items:flex-start;gap:12px;">
         <div style="width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0;${DIV_STYLE[t.division] || 'background:#f0f0f0;color:#333;border:1px solid #ddd;'}">
           ${t.division || '?'}
         </div>
@@ -328,42 +334,23 @@ function renderAll() {
           <div style="font-weight:700;color:#000e27;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.name}</div>
           <div style="font-size:0.75rem;color:#747780;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.city || ''}${t.state ? ', ' + t.state : ''}${t.conference ? ' &middot; ' + t.conference : ''}</div>
         </div>
+        <div style="font-size:0.75rem;color:#a8b4c8;flex-shrink:0;margin-top:2px;">${isOpen ? '&#9650;' : '&#9660;'}</div>
       </div>
-    </div>
-  `).join('');
+      ${isOpen ? `<div style="padding:1rem;background:#0d1f3c;border-top:1px solid #1a3a6a;">${detailHtml}</div>` : ''}
+    </div>`;
+  }).join('');
 }
 
 function openDetail(id) {
+  if (activeTeamId === id) {
+    activeTeamId = null;
+    renderAll();
+    return;
+  }
   const t = allTeams.find(x => x._id === id);
   if (!t) return;
   activeTeamId = id;
   renderAll();
-
-  const color = COLORS[t.division] || '#888';
-  const panel = document.getElementById('detailPanel');
-  panel.style.borderLeftColor = color;
-  document.getElementById('detailDiv').textContent = `${t.division || ''} - ${t.conference || ''}`;
-  document.getElementById('detailDiv').style.color = color;
-  document.getElementById('detailName').textContent = t.name;
-  document.getElementById('detailCity').textContent = `${t.city || ''}, ${t.state || ''}`;
-
-  const rows = [
-    t.homeField && { label: 'Home Field', value: t.homeField },
-    t.practiceLocation && { label: 'Practice', value: t.practiceLocation },
-    t.founded && { label: 'Founded', value: t.founded },
-    t.contact && { label: 'Contact', value: t.contact },
-  ].filter(Boolean);
-
-  document.getElementById('detailBody').innerHTML =
-    rows.map(r => `
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <span style="color:#a8b4c8;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;min-width:80px;padding-top:1px;flex-shrink:0;">${r.label}</span>
-        <span style="color:#f0f4ff;font-size:0.75rem;">${r.value}</span>
-      </div>
-    `).join('') +
-    (t.website ? `<a style="display:inline-block;margin-top:8px;padding:6px 14px;background:#b22234;color:#fff;border-radius:8px;font-size:0.75rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.05em;" href="https://${t.website.replace(/^https?:\/\//, '')}" target="_blank">Visit Website</a>` : '');
-
-  panel.classList.remove('hidden');
 
   const lat = parseFloat(t.lat), lng = parseFloat(t.lng);
   if (lat && lng) {
@@ -374,12 +361,6 @@ function openDetail(id) {
   const el = document.querySelector(`#teamList [data-id="${id}"]`);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
-
-document.getElementById('detailClose').addEventListener('click', () => {
-  document.getElementById('detailPanel').classList.add('hidden');
-  activeTeamId = null;
-  renderAll();
-});
 
 document.querySelectorAll('.filter-btn').forEach(btn => {
   const isActive = btn.classList.contains('active');
