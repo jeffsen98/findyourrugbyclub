@@ -255,7 +255,7 @@ function parseCSV(text) {
       }
       vals.push(cur.trim());
       const obj = {};
-      headers.forEach((h, i) => { obj[h] = (vals[i] || '').replace(/^"|"$/g, '').trim(); });
+      headers.forEach((h, i) => { const v = (vals[i] || '').replace(/^"|"$/g, '').trim(); obj[h] = (v.toUpperCase() === 'N/A' ? '' : v); });
       return obj;
     });
 }
