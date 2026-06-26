@@ -220,6 +220,8 @@ const DIV_STYLE = {
   D2: 'background:rgba(26,79,138,0.12);color:#1a4f8a;border:1px solid rgba(26,79,138,0.4);',
   D3: 'background:rgba(193,127,36,0.12);color:#c17f24;border:1px solid rgba(193,127,36,0.4);',
 };
+const DIV_BG = { D1: 'rgba(178,34,52,0.12)', D2: 'rgba(26,79,138,0.12)', D3: 'rgba(193,127,36,0.12)' };
+const DIV_BORDER = { D1: 'rgba(178,34,52,0.4)', D2: 'rgba(26,79,138,0.4)', D3: 'rgba(193,127,36,0.4)' };
 
 const map = L.map('map', { zoomControl: true }).setView([39.5, -98.35], 4);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
@@ -253,14 +255,18 @@ function createMarkerIcon(division) {
 function divBadgeHtml(division) {
   const divs = getDivisions(division);
   if (divs.length >= 2) {
-    const c1 = COLORS[divs[0]] || '#888', c2 = COLORS[divs[1]] || '#aaa';
-    return `<div style="width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;border:1px solid rgba(0,0,0,0.1);">
+    const bg1 = DIV_BG[divs[0]] || 'rgba(128,128,128,0.12)';
+    const bg2 = DIV_BG[divs[1]] || 'rgba(128,128,128,0.12)';
+    const t1 = COLORS[divs[0]] || '#555';
+    const t2 = COLORS[divs[1]] || '#555';
+    const border = DIV_BORDER[divs[0]] || 'rgba(0,0,0,0.2)';
+    return `<div style="width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0;border:1px solid ${border};">
       <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="0,0 40,0 0,40" fill="${c1}"/>
-        <polygon points="40,0 40,40 0,40" fill="${c2}"/>
-        <line x1="0" y1="40" x2="40" y2="0" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
-        <text x="8" y="15" font-size="9" font-weight="800" fill="rgba(255,255,255,0.95)" font-family="Inter,sans-serif">${divs[0]}</text>
-        <text x="20" y="34" font-size="9" font-weight="800" fill="rgba(255,255,255,0.95)" font-family="Inter,sans-serif">${divs[1]}</text>
+        <polygon points="0,0 40,0 0,40" fill="${bg1}"/>
+        <polygon points="40,0 40,40 0,40" fill="${bg2}"/>
+        <line x1="0" y1="40" x2="40" y2="0" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>
+        <text x="5" y="14" font-size="8" font-weight="800" fill="${t1}" font-family="Inter,sans-serif">${divs[0]}</text>
+        <text x="22" y="36" font-size="8" font-weight="800" fill="${t2}" font-family="Inter,sans-serif">${divs[1]}</text>
       </svg>
     </div>`;
   }
