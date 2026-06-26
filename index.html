@@ -270,14 +270,14 @@ function divBadgeHtml(division) {
     const border = DIV_BORDER[divs[0]] || 'rgba(0,0,0,0.2)';
     return `<div style="width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0;border:1px solid ${border};">
       <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="0,0 26.7,0 0,26.7" fill="${bg1}"/>
-        <polygon points="26.7,0 40,0 40,13.3 13.3,40 0,40 0,26.7" fill="${bg2}"/>
-        <polygon points="40,13.3 40,40 13.3,40" fill="${bg3}"/>
-        <line x1="26.7" y1="0" x2="0" y2="26.7" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>
-        <line x1="40" y1="13.3" x2="13.3" y2="40" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>
-        <text x="5" y="14" font-size="7" font-weight="800" fill="${t1}" font-family="Inter,sans-serif">${divs[0]}</text>
-        <text x="20" y="24" text-anchor="middle" font-size="7" font-weight="800" fill="${t2}" font-family="Inter,sans-serif">${divs[1]}</text>
-        <text x="35" y="36" text-anchor="end" font-size="7" font-weight="800" fill="${t3}" font-family="Inter,sans-serif">${divs[2]}</text>
+        <polygon points="0,0 30,0 0,30" fill="${bg1}"/>
+        <polygon points="30,0 40,0 40,10 10,40 0,40 0,30" fill="${bg2}"/>
+        <polygon points="40,10 40,40 10,40" fill="${bg3}"/>
+        <line x1="30" y1="0" x2="0" y2="30" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>
+        <line x1="40" y1="10" x2="10" y2="40" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>
+        <text x="5" y="13" font-size="7" font-weight="800" fill="${t1}" font-family="Inter,sans-serif">${divs[0]}</text>
+        <text x="20" y="23" text-anchor="middle" font-size="7" font-weight="800" fill="${t2}" font-family="Inter,sans-serif">${divs[1]}</text>
+        <text x="36" y="37" text-anchor="end" font-size="7" font-weight="800" fill="${t3}" font-family="Inter,sans-serif">${divs[2]}</text>
       </svg>
     </div>`;
   }
@@ -293,7 +293,7 @@ function divBadgeHtml(division) {
         <polygon points="40,0 40,40 0,40" fill="${bg2}"/>
         <line x1="0" y1="40" x2="40" y2="0" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>
         <text x="5" y="14" font-size="8" font-weight="800" fill="${t1}" font-family="Inter,sans-serif">${divs[0]}</text>
-        <text x="35" y="28" text-anchor="end" font-size="8" font-weight="800" fill="${t2}" font-family="Inter,sans-serif">${divs[1]}</text>
+        <text x="30" y="34" text-anchor="end" font-size="8" font-weight="800" fill="${t2}" font-family="Inter,sans-serif">${divs[1]}</text>
       </svg>
     </div>`;
   }
