@@ -352,7 +352,13 @@ function renderAll() {
       tState.includes(q) ||
       stateMatch;
     return matchDiv && matchSearch;
-  }).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  }).sort((a, b) => {
+    if (window.innerWidth < 1024 && activeTeamId !== null) {
+      if (a._id === activeTeamId) return -1;
+      if (b._id === activeTeamId) return 1;
+    }
+    return (a.name || '').localeCompare(b.name || '');
+  });
 
   Object.values(markers).forEach(m => map.removeLayer(m));
   markers = {};
@@ -431,14 +437,7 @@ function openDetail(id) {
   }
 
   const el = document.querySelector(`#teamList [data-id="${id}"]`);
-  if (el) {
-    if (window.innerWidth < 1024) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 72;
-      window.scrollTo({ top, behavior: 'smooth' });
-    } else {
-      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-  }
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 document.querySelectorAll('.filter-btn').forEach(btn => {
