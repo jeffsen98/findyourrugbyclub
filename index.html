@@ -341,12 +341,15 @@ function renderAll() {
   const filtered = allTeams.filter(t => {
     const matchDiv = activeDiv === 'all' || getDivisions(t.division).includes(activeDiv.toUpperCase());
     const q = searchTerm.toLowerCase();
-    const stateAbbr = (STATE_NAMES[q] || '').toLowerCase();
+    const tState = (t.state || '').toLowerCase();
+    const stateMatch = Object.entries(STATE_NAMES).some(([name, abbr]) =>
+      name.includes(q) && abbr.toLowerCase() === tState
+    );
     const matchSearch = !q ||
       (t.name || '').toLowerCase().includes(q) ||
       (t.city || '').toLowerCase().includes(q) ||
-      (t.state || '').toLowerCase().includes(q) ||
-      (stateAbbr && (t.state || '').toLowerCase() === stateAbbr);
+      tState.includes(q) ||
+      stateMatch;
     return matchDiv && matchSearch;
   }).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
