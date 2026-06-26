@@ -228,6 +228,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
   attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
 }).addTo(map);
 
+const STATE_NAMES = {'alabama':'AL','alaska':'AK','arizona':'AZ','arkansas':'AR','california':'CA','colorado':'CO','connecticut':'CT','delaware':'DE','florida':'FL','georgia':'GA','hawaii':'HI','idaho':'ID','illinois':'IL','indiana':'IN','iowa':'IA','kansas':'KS','kentucky':'KY','louisiana':'LA','maine':'ME','maryland':'MD','massachusetts':'MA','michigan':'MI','minnesota':'MN','mississippi':'MS','missouri':'MO','montana':'MT','nebraska':'NE','nevada':'NV','new hampshire':'NH','new jersey':'NJ','new mexico':'NM','new york':'NY','north carolina':'NC','north dakota':'ND','ohio':'OH','oklahoma':'OK','oregon':'OR','pennsylvania':'PA','rhode island':'RI','south carolina':'SC','south dakota':'SD','tennessee':'TN','texas':'TX','utah':'UT','vermont':'VT','virginia':'VA','washington':'WA','west virginia':'WV','wisconsin':'WI','wyoming':'WY'};
 let allTeams = [], markers = {}, activeDiv = 'all', searchTerm = '', activeTeamId = null;
 
 function getDivisions(division) {
@@ -275,9 +276,9 @@ function divBadgeHtml(division) {
         <polygon points="40,10 40,40 10,40" fill="${bg3}"/>
         <line x1="30" y1="0" x2="0" y2="30" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>
         <line x1="40" y1="10" x2="10" y2="40" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>
-        <text x="5" y="13" font-size="7" font-weight="800" fill="${t1}" font-family="Inter,sans-serif">${divs[0]}</text>
+        <text x="3" y="11" font-size="7" font-weight="800" fill="${t1}" font-family="Inter,sans-serif">${divs[0]}</text>
         <text x="20" y="23" text-anchor="middle" font-size="7" font-weight="800" fill="${t2}" font-family="Inter,sans-serif">${divs[1]}</text>
-        <text x="36" y="37" text-anchor="end" font-size="7" font-weight="800" fill="${t3}" font-family="Inter,sans-serif">${divs[2]}</text>
+        <text x="36" y="35" text-anchor="end" font-size="7" font-weight="800" fill="${t3}" font-family="Inter,sans-serif">${divs[2]}</text>
       </svg>
     </div>`;
   }
@@ -293,7 +294,7 @@ function divBadgeHtml(division) {
         <polygon points="40,0 40,40 0,40" fill="${bg2}"/>
         <line x1="0" y1="40" x2="40" y2="0" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>
         <text x="5" y="14" font-size="8" font-weight="800" fill="${t1}" font-family="Inter,sans-serif">${divs[0]}</text>
-        <text x="30" y="34" text-anchor="end" font-size="8" font-weight="800" fill="${t2}" font-family="Inter,sans-serif">${divs[1]}</text>
+        <text x="33" y="31" text-anchor="end" font-size="8" font-weight="800" fill="${t2}" font-family="Inter,sans-serif">${divs[1]}</text>
       </svg>
     </div>`;
   }
@@ -340,10 +341,12 @@ function renderAll() {
   const filtered = allTeams.filter(t => {
     const matchDiv = activeDiv === 'all' || getDivisions(t.division).includes(activeDiv.toUpperCase());
     const q = searchTerm.toLowerCase();
+    const stateAbbr = (STATE_NAMES[q] || '').toLowerCase();
     const matchSearch = !q ||
       (t.name || '').toLowerCase().includes(q) ||
       (t.city || '').toLowerCase().includes(q) ||
-      (t.state || '').toLowerCase().includes(q);
+      (t.state || '').toLowerCase().includes(q) ||
+      (stateAbbr && (t.state || '').toLowerCase() === stateAbbr);
     return matchDiv && matchSearch;
   }).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
