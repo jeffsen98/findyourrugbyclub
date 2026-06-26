@@ -293,11 +293,7 @@ function renderAll() {
     const lat = parseFloat(t.lat), lng = parseFloat(t.lng);
     if (!lat || !lng) return;
     const m = L.marker([lat, lng], { icon: createMarkerIcon(t.division) }).addTo(map);
-    m.bindPopup(`
-      <div class="popup-name">${t.name}</div>
-      <div class="popup-meta">${t.division} &middot; ${t.city}, ${t.state}</div>
-      <button class="popup-open" onclick="openDetail(${t._id})">View Club</button>
-    `);
+    m.on('click', () => openDetail(t._id));
     markers[t._id] = m;
   });
 
