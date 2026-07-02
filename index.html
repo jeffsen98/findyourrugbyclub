@@ -134,6 +134,12 @@
     <div class="max-w-3xl w-full text-center space-y-6">
       <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">Find Your Local Rugby Club</h1>
       <p class="text-lg max-w-xl mx-auto" style="color:#44474f;">Explore active clubs across the United States. Find a team and get on the pitch.</p>
+      <div class="flex justify-center">
+        <div class="inline-flex rounded-full p-1" style="background:#eef0f4;border:1px solid #c4c6d0;">
+          <button id="mensTab" onclick="switchLeague('mens')" class="px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:#000e27;color:#fff;">Men's</button>
+          <button id="womensTab" onclick="switchLeague('womens')" class="px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:transparent;color:#44474f;">Women's</button>
+        </div>
+      </div>
       <div class="max-w-2xl mx-auto">
         <div class="search-input-shadow flex items-center bg-white rounded-full h-14 px-6 transition-all" style="border:1px solid #c4c6d0;">
           <span style="color:#747780;font-size:1.2rem;">&#x2315;</span>
@@ -213,7 +219,11 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?output=csv';
+const SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub';
+const LEAGUE_URLS = {
+  mens: SHEET_BASE + '?output=csv',
+  womens: SHEET_BASE + '?gid=WOMENS_GID_HERE&single=true&output=csv',
+};
 
 const COLORS = { D1: '#b22234', D2: '#1a4f8a', D3: '#c17f24' };
 const DIV_STYLE = {
@@ -230,7 +240,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
 }).addTo(map);
 
 const STATE_NAMES = {'alabama':'AL','alaska':'AK','arizona':'AZ','arkansas':'AR','california':'CA','colorado':'CO','connecticut':'CT','delaware':'DE','florida':'FL','georgia':'GA','hawaii':'HI','idaho':'ID','illinois':'IL','indiana':'IN','iowa':'IA','kansas':'KS','kentucky':'KY','louisiana':'LA','maine':'ME','maryland':'MD','massachusetts':'MA','michigan':'MI','minnesota':'MN','mississippi':'MS','missouri':'MO','montana':'MT','nebraska':'NE','nevada':'NV','new hampshire':'NH','new jersey':'NJ','new mexico':'NM','new york':'NY','north carolina':'NC','north dakota':'ND','ohio':'OH','oklahoma':'OK','oregon':'OR','pennsylvania':'PA','rhode island':'RI','south carolina':'SC','south dakota':'SD','tennessee':'TN','texas':'TX','utah':'UT','vermont':'VT','virginia':'VA','washington':'WA','west virginia':'WV','wisconsin':'WI','wyoming':'WY'};
-let allTeams = [], markers = {}, activeDiv = 'all', searchTerm = '', activeTeamId = null;
+let allTeams = [], markers = {}, activeDiv = 'all', searchTerm = '', activeTeamId = null, activeLeague = 'mens';
 
 function getDivisions(division) {
   return (division || '').toUpperCase().split('/').map(d => d.trim()).filter(Boolean);
@@ -323,19 +333,38 @@ function parseCSV(text) {
     });
 }
 
-async function loadTeams() {
+const leagueCache = {};
+
+async function loadTeams(league) {
+  league = league || activeLeague;
   let teams = [];
-  try {
-    const res = await fetch(SHEET_CSV_URL);
-    const text = await res.text();
-    const parsed = parseCSV(text);
-    if (parsed.length > 0) teams = parsed;
-  } catch (e) {
-    console.warn('Could not load from Google Sheet:', e);
+  if (leagueCache[league]) {
+    teams = leagueCache[league];
+  } else {
+    try {
+      const res = await fetch(LEAGUE_URLS[league]);
+      const text = await res.text();
+      const parsed = parseCSV(text);
+      if (parsed.length > 0) teams = parsed;
+      leagueCache[league] = teams;
+    } catch (e) {
+      console.warn('Could not load from Google Sheet:', e);
+    }
   }
   allTeams = teams.filter(t => (t.name || '').trim() !== '' && (t.lat || '').trim() !== '').map((t, i) => ({ ...t, _id: i }));
   document.getElementById('loadingOverlay').style.display = 'none';
   renderAll();
+}
+
+function switchLeague(league) {
+  if (league === activeLeague) return;
+  activeLeague = league;
+  activeTeamId = null;
+  const mens = document.getElementById('mensTab'), womens = document.getElementById('womensTab');
+  const on = 'background:#000e27;color:#fff;', off = 'background:transparent;color:#44474f;';
+  mens.style.cssText = league === 'mens' ? on : off;
+  womens.style.cssText = league === 'womens' ? on : off;
+  loadTeams(league);
 }
 
 function renderAll() {
