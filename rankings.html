@@ -249,39 +249,51 @@ function switchView(view) {
   if (view === 'ladders' && !laddersLoaded) loadLadders();
 }
 
+function divColorOf(division) {
+  const first = (division || '').toUpperCase().split('/')[0].trim();
+  return DIV_COLORS[first] || '#b22234';
+}
+
+function compAnchor(comp) {
+  return 'comp-' + comp.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+}
+
 function buildLadderTable(comp, division, rows) {
-  const color = DIV_COLORS[(division || '').toUpperCase()] || '#000e27';
+  const color = divColorOf(division);
   const body = rows.map((r, i) => {
     const rank = parseInt(r.rank || i + 1);
     const isTop = rank === 1;
-    return `<tr style="border-bottom:1px solid #e5e7eb;background:${isTop ? '#fafbff' : i % 2 === 0 ? '#fff' : '#f9fafb'};">
-      <td class="px-2 sm:px-4 py-3 font-bold text-center text-sm" style="color:${isTop ? '#b22234' : '#747780'};">${rank}</td>
+    return `<tr style="border-bottom:1px solid #eef0f4;background:${isTop ? '#fafbff' : '#fff'};">
+      <td class="px-2 sm:px-4 py-3 text-center text-sm">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-weight:800;font-size:0.72rem;${isTop ? `background:${color};color:#fff;` : 'background:#eef0f4;color:#747780;'}">${rank}</span>
+      </td>
       <td class="px-2 sm:px-4 py-3 font-semibold text-sm" style="color:#000e27;">${r.team || '-'}</td>
       <td class="px-2 sm:px-4 py-3 text-center font-semibold text-sm" style="color:#2e7d52;">${r.w || '0'}</td>
       <td class="px-2 sm:px-4 py-3 text-center font-semibold text-sm" style="color:#b22234;">${r.l || '0'}</td>
       <td class="px-2 sm:px-4 py-3 text-center text-sm" style="color:#44474f;">${r.d || '0'}</td>
-      <td class="px-2 sm:px-4 py-3 text-center font-bold text-sm" style="color:#000e27;">${r.pts || '0'}</td>
+      <td class="px-2 sm:px-4 py-3 text-center font-extrabold text-sm" style="color:#000e27;">${r.pts || '0'}</td>
     </tr>`;
   }).join('');
-  return `<div class="mb-14">
-    <div class="flex items-center gap-3 mb-4">
-      ${division ? `<span class="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider text-white" style="background:${color};">${division}</span>` : ''}
-      <h2 class="text-xl sm:text-2xl font-extrabold" style="color:#000e27;">${comp}</h2>
+  return `<div id="${compAnchor(comp)}" class="rounded-2xl overflow-hidden border shadow-sm" style="border-color:#c4c6d0;scroll-margin-top:80px;">
+    <div class="flex items-center justify-between gap-3 px-4 sm:px-6 py-4" style="background:#000e27;border-left:5px solid ${color};">
+      <div class="flex items-center gap-3 min-w-0">
+        ${division ? `<span class="px-2.5 py-1 rounded-md text-xs font-black uppercase tracking-wider text-white flex-shrink-0" style="background:${color};">${division}</span>` : ''}
+        <h2 class="text-base sm:text-lg font-extrabold text-white truncate">${comp}</h2>
+      </div>
+      <span class="text-xs font-semibold flex-shrink-0" style="color:#a8b4c8;">${rows.length} team${rows.length !== 1 ? 's' : ''}</span>
     </div>
-    <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
-      <table class="rankings-table text-xs sm:text-sm">
-        <colgroup><col class="col-rank"/><col/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
-        <thead><tr style="background:#000e27;color:#fff;">
-          <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
-          <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
-          <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
-          <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">L</th>
-          <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">D</th>
-          <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">Pts</th>
-        </tr></thead>
-        <tbody>${body}</tbody>
-      </table>
-    </div>
+    <table class="rankings-table text-xs sm:text-sm">
+      <colgroup><col class="col-rank"/><col/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
+      <thead><tr style="background:#f7f8fa;color:#747780;border-bottom:1px solid #e5e7eb;">
+        <th class="px-2 sm:px-4 py-2.5 text-center font-bold text-xs uppercase tracking-wider">#</th>
+        <th class="px-2 sm:px-4 py-2.5 text-left font-bold text-xs uppercase tracking-wider">Team</th>
+        <th class="px-2 sm:px-4 py-2.5 text-center font-bold text-xs uppercase tracking-wider">W</th>
+        <th class="px-2 sm:px-4 py-2.5 text-center font-bold text-xs uppercase tracking-wider">L</th>
+        <th class="px-2 sm:px-4 py-2.5 text-center font-bold text-xs uppercase tracking-wider">D</th>
+        <th class="px-2 sm:px-4 py-2.5 text-center font-bold text-xs uppercase tracking-wider">Pts</th>
+      </tr></thead>
+      <tbody>${body}</tbody>
+    </table>
   </div>`;
 }
 
@@ -303,10 +315,19 @@ async function loadLadders() {
       if (!groups[key]) groups[key] = { division: r.division || '', rows: [] };
       groups[key].rows.push(r);
     });
-    content.innerHTML = Object.entries(groups).map(([comp, g]) => {
+    const entries = Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0]));
+    const chips = entries.map(([comp, g]) => `
+      <a href="#${compAnchor(comp)}" class="px-3 py-1.5 rounded-full border text-xs font-bold whitespace-nowrap transition-all hover:text-white"
+        style="border-color:${divColorOf(g.division)};color:${divColorOf(g.division)};"
+        onmouseover="this.style.background='${divColorOf(g.division)}';this.style.color='#fff'"
+        onmouseout="this.style.background='transparent';this.style.color='${divColorOf(g.division)}'">${comp}</a>`).join('');
+    const tables = entries.map(([comp, g]) => {
       g.rows.sort((a, b) => parseInt(a.rank || 999) - parseInt(b.rank || 999));
       return buildLadderTable(comp, g.division, g.rows);
     }).join('');
+    content.innerHTML = `
+      <div class="flex flex-wrap justify-center gap-2 mb-10">${chips}</div>
+      <div class="space-y-10">${tables}</div>`;
     laddersLoaded = true;
   } catch (e) {
     content.innerHTML = '<p class="text-sm text-center py-10" style="color:#747780;">Could not load ladders. Please check back later.</p>';
