@@ -169,7 +169,7 @@
       </div>
 
       <!-- Map (collapsible on mobile) -->
-      <div class="lg:col-span-8 order-1 lg:order-2">
+      <div id="mapHome" class="lg:col-span-8 order-1 lg:order-2">
         <button id="mapToggleBtn" onclick="toggleMap()" class="md:hidden w-full flex items-center justify-between px-4 py-3 rounded-xl mb-3 text-sm font-bold" style="background:#000e27;color:#fff;">
           <span>Show Map</span>
           <svg id="mapChevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -381,13 +381,9 @@ function renderAll() {
       tState.includes(q) ||
       stateMatch;
     return matchDiv && matchSearch;
-  }).sort((a, b) => {
-    if (window.innerWidth < 1024 && activeTeamId !== null) {
-      if (a._id === activeTeamId) return -1;
-      if (b._id === activeTeamId) return 1;
-    }
-    return (a.name || '').localeCompare(b.name || '');
-  });
+  }).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
+  rehomeMap();
 
   Object.values(markers).forEach(m => map.removeLayer(m));
   markers = {};
@@ -448,6 +444,16 @@ function renderAll() {
   }).join('');
 }
 
+function rehomeMap() {
+  const wrap = document.getElementById('mapWrap');
+  const home = document.getElementById('mapHome');
+  if (wrap && home && wrap.parentElement !== home) {
+    home.appendChild(wrap);
+    wrap.style.height = '580px';
+    if (typeof map !== 'undefined') map.invalidateSize();
+  }
+}
+
 function openDetail(id) {
   if (activeTeamId === id) {
     activeTeamId = null;
@@ -459,14 +465,35 @@ function openDetail(id) {
   activeTeamId = id;
   renderAll();
 
+  // On mobile, slide the map down so it sits right above the opened club card
+  if (window.innerWidth < 1024) {
+    const card = document.querySelector(`#teamList [data-id="${id}"]`);
+    const wrap = document.getElementById('mapWrap');
+    if (card && wrap) {
+      card.parentNode.insertBefore(wrap, card);
+      wrap.classList.remove('hidden');
+      wrap.style.height = '320px';
+      wrap.style.scrollMarginTop = '76px';
+      mapOpen = true;
+      const btn = document.getElementById('mapToggleBtn');
+      if (btn) { btn.querySelector('span').textContent = 'Hide Map'; }
+      const chevron = document.getElementById('mapChevron');
+      if (chevron) chevron.style.transform = 'rotate(180deg)';
+      map.invalidateSize();
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   const lat = parseFloat(t.lat), lng = parseFloat(t.lng);
   if (lat && lng) {
     map.flyTo([lat, lng], 12, { duration: 0.8 });
     if (markers[id]) markers[id].openPopup();
   }
 
-  const el = document.querySelector(`#teamList [data-id="${id}"]`);
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  if (window.innerWidth >= 1024) {
+    const el = document.querySelector(`#teamList [data-id="${id}"]`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 }
 
 document.querySelectorAll('.filter-btn').forEach(btn => {
