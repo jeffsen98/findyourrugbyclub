@@ -316,22 +316,32 @@ async function loadLadders() {
       groups[key].rows.push(r);
     });
     const entries = Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0]));
-    const chips = entries.map(([comp, g]) => `
-      <a href="#${compAnchor(comp)}" class="px-3 py-1.5 rounded-full border text-xs font-bold whitespace-nowrap transition-all hover:text-white"
-        style="border-color:${divColorOf(g.division)};color:${divColorOf(g.division)};"
-        onmouseover="this.style.background='${divColorOf(g.division)}';this.style.color='#fff'"
-        onmouseout="this.style.background='transparent';this.style.color='${divColorOf(g.division)}'">${comp}</a>`).join('');
+    const options = entries.map(([comp]) => `<option value="${compAnchor(comp)}">${comp}</option>`).join('');
     const tables = entries.map(([comp, g]) => {
       g.rows.sort((a, b) => parseInt(a.rank || 999) - parseInt(b.rank || 999));
       return buildLadderTable(comp, g.division, g.rows);
     }).join('');
     content.innerHTML = `
-      <div class="flex flex-wrap justify-center gap-2 mb-10">${chips}</div>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10">
+        <label class="text-sm font-bold" style="color:#000e27;" for="compJump">Jump to competition</label>
+        <select id="compJump" onchange="jumpToComp(this.value)"
+          class="w-full sm:w-auto px-4 py-2.5 rounded-full border text-sm font-semibold outline-none cursor-pointer"
+          style="border-color:#c4c6d0;color:#000e27;background:#fff;max-width:340px;">
+          <option value="">Select a competition...</option>
+          ${options}
+        </select>
+      </div>
       <div class="space-y-10">${tables}</div>`;
     laddersLoaded = true;
   } catch (e) {
     content.innerHTML = '<p class="text-sm text-center py-10" style="color:#747780;">Could not load ladders. Please check back later.</p>';
   }
+}
+
+function jumpToComp(anchorId) {
+  if (!anchorId) return;
+  const el = document.getElementById(anchorId);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function openDrawer() {
