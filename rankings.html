@@ -58,15 +58,9 @@
 <main class="pt-16">
   <section class="flex flex-col items-center justify-center px-4 py-16 bg-white border-b" style="border-color:#c4c6d0;">
     <div class="max-w-4xl w-full text-center space-y-4">
-      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">Club Rankings</h1>
+      <h1 id="pageTitle" class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">Club Rankings</h1>
       <p class="text-lg max-w-xl mx-auto" style="color:#44474f;">Current standings across all divisions. Updated regularly.</p>
       <p id="rankingsNote" class="text-sm max-w-2xl mx-auto mt-2" style="color:#747780;">Rankings are determined by a combination of strength of schedule, point differential, roster depth, and other key factors in the evaluation process.</p>
-      <div class="flex justify-center mt-6">
-        <div class="inline-flex rounded-full p-1" style="background:#eef0f4;border:1px solid #c4c6d0;">
-          <button id="rankingsViewTab" onclick="switchView('rankings')" class="px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:#000e27;color:#fff;">Rankings</button>
-          <button id="laddersViewTab" onclick="switchView('ladders')" class="px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:transparent;color:#44474f;">Ladders</button>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -236,17 +230,23 @@ async function loadRankings() {
 let activeView = 'rankings', laddersLoaded = false;
 
 function switchView(view) {
-  if (view === activeView) return;
   activeView = view;
-  const on = 'background:#000e27;color:#fff;', off = 'background:transparent;color:#44474f;';
-  document.getElementById('rankingsViewTab').style.cssText = view === 'rankings' ? on : off;
-  document.getElementById('laddersViewTab').style.cssText = view === 'ladders' ? on : off;
-  document.getElementById('rankingsNote').textContent = view === 'rankings'
-    ? 'Rankings are determined by a combination of strength of schedule, point differential, roster depth, and other key factors in the evaluation process.'
-    : 'Official competition standings, updated automatically from Rugby Xplorer.';
-  document.getElementById('tablesWrap').classList.toggle('hidden', view !== 'rankings');
-  document.getElementById('laddersWrap').classList.toggle('hidden', view !== 'ladders');
-  if (view === 'ladders' && !laddersLoaded) loadLadders();
+  const isLadders = view === 'ladders';
+  document.getElementById('pageTitle').textContent = isLadders ? 'Competition Ladders' : 'Club Rankings';
+  document.getElementById('rankingsNote').textContent = isLadders
+    ? 'Official competition standings, updated automatically each week.'
+    : 'Rankings are determined by a combination of strength of schedule, point differential, roster depth, and other key factors in the evaluation process.';
+  document.getElementById('tablesWrap').classList.toggle('hidden', isLadders);
+  document.getElementById('laddersWrap').classList.toggle('hidden', !isLadders);
+  document.querySelectorAll('a[href="rankings"]').forEach(a => {
+    const inDrawer = !!a.closest('#mobileDrawer');
+    a.style.color = isLadders ? (inDrawer ? '#fff' : '#44474f') : '#b22234';
+  });
+  document.querySelectorAll('a[href="rankings?view=ladders"]').forEach(a => {
+    const inDrawer = !!a.closest('#mobileDrawer');
+    a.style.color = isLadders ? '#b22234' : (inDrawer ? '#fff' : '#44474f');
+  });
+  if (isLadders && !laddersLoaded) loadLadders();
 }
 
 function divColorOf(division) {
