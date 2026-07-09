@@ -69,7 +69,7 @@
     <p class="text-sm font-medium" style="color:#747780;">Loading rankings...</p>
   </div>
 
-  <div id="tablesWrap" class="hidden max-w-5xl mx-auto px-3 sm:px-6 py-12 space-y-14">
+  <div id="tablesWrap" class="hidden max-w-7xl mx-auto px-3 sm:px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
     <!-- D1 -->
     <div>
@@ -128,7 +128,7 @@
       <p id="d3Empty" class="hidden text-sm text-center py-6" style="color:#747780;">No D3 rankings yet.</p>
     </div>
 
-    <p class="text-xs text-right" style="color:#a8b4c8;">Rankings pulled live from Google Sheets</p>
+    <p class="text-xs text-right lg:col-span-3" style="color:#a8b4c8;">Rankings pulled live from Google Sheets</p>
   </div>
 
   <!-- Ladders view (auto-updated standings by competition) -->
@@ -179,19 +179,16 @@ function parseCSV(text) {
   });
 }
 
-const MENS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?output=csv';
-
-function buildRankRows(names, logoByName) {
-  if (names.length === 0) return null;
-  return names.map((n, i) => {
+function buildRankRows(entries) {
+  if (entries.length === 0) return null;
+  return entries.map((e, i) => {
     const isTop3 = i < 3;
-    const logo = logoByName[n.toLowerCase()] || '';
     return `<tr style="border-bottom:1px solid #e5e7eb;background:${isTop3 ? '#fafbff' : i % 2 === 0 ? '#fff' : '#f9fafb'};">
-      <td class="px-2 sm:px-4 py-2.5 font-bold text-center text-sm" style="color:${isTop3 ? '#b22234' : '#747780'};">${i + 1}</td>
-      <td class="px-2 sm:px-4 py-2.5">
+      <td class="px-2 sm:px-3 py-2.5 font-bold text-center text-sm" style="color:${isTop3 ? '#b22234' : '#747780'};">${i + 1}</td>
+      <td class="px-2 sm:px-3 py-2.5">
         <div style="display:flex;align-items:center;gap:10px;">
-          ${logo ? `<img src="${logo}" alt="" loading="lazy" style="width:26px;height:26px;object-fit:contain;border-radius:5px;background:#f3f4f6;flex-shrink:0;" onerror="this.style.display='none'">` : '<span style="width:26px;flex-shrink:0;"></span>'}
-          <span class="font-semibold text-sm" style="color:#000e27;">${n}</span>
+          ${e.crest ? `<img src="${e.crest}" alt="" loading="lazy" style="width:26px;height:26px;object-fit:contain;border-radius:5px;background:#f3f4f6;flex-shrink:0;" onerror="this.style.display='none'">` : '<span style="width:26px;flex-shrink:0;"></span>'}
+          <span class="font-semibold text-sm" style="color:#000e27;">${e.name}</span>
         </div>
       </td>
     </tr>`;
@@ -200,25 +197,17 @@ function buildRankRows(names, logoByName) {
 
 async function loadRankings() {
   try {
-    const [rankText, mensText] = await Promise.all([
-      fetch(RANKINGS_CSV_URL).then(r => r.text()),
-      fetch(MENS_CSV_URL).then(r => r.text()),
-    ]);
-    const logoByName = {};
-    parseCSV(mensText).forEach(m => {
-      const n = (m.name || '').trim().toLowerCase();
-      if (n && (m.logo || '').trim()) logoByName[n] = m.logo.trim();
-    });
+    const rankText = await fetch(RANKINGS_CSV_URL).then(r => r.text());
     const lists = { d1: [], d2: [], d3: [] };
     parseCSV(rankText).forEach(r => {
       ['d1', 'd2', 'd3'].forEach(k => {
         const n = (r[k] || '').trim();
-        if (n) lists[k].push(n);
+        if (n) lists[k].push({ name: n, crest: (r[k + 'crest'] || '').trim() });
       });
     });
-    const d1html = buildRankRows(lists.d1, logoByName);
-    const d2html = buildRankRows(lists.d2, logoByName);
-    const d3html = buildRankRows(lists.d3, logoByName);
+    const d1html = buildRankRows(lists.d1);
+    const d2html = buildRankRows(lists.d2);
+    const d3html = buildRankRows(lists.d3);
     if (d1html) document.getElementById('d1Body').innerHTML = d1html; else document.getElementById('d1Empty').classList.remove('hidden');
     if (d2html) document.getElementById('d2Body').innerHTML = d2html; else document.getElementById('d2Empty').classList.remove('hidden');
     if (d3html) document.getElementById('d3Body').innerHTML = d3html; else document.getElementById('d3Empty').classList.remove('hidden');
