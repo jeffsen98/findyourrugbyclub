@@ -79,14 +79,10 @@
       </div>
       <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
         <table class="rankings-table text-xs sm:text-sm">
-          <colgroup><col class="col-rank"/><col class="col-team"/><col/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
+          <colgroup><col class="col-rank"/><col/></colgroup>
           <thead><tr style="background:#000e27;color:#fff;">
-            <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
+            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">#</th>
             <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
-            <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Conference</th>
-            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
-            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">L</th>
-            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">D</th>
           </tr></thead>
           <tbody id="d1Body"></tbody>
         </table>
@@ -102,14 +98,10 @@
       </div>
       <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
         <table class="rankings-table text-xs sm:text-sm">
-          <colgroup><col class="col-rank"/><col class="col-team"/><col/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
+          <colgroup><col class="col-rank"/><col/></colgroup>
           <thead><tr style="background:#000e27;color:#fff;">
-            <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
+            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">#</th>
             <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
-            <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Conference</th>
-            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
-            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">L</th>
-            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">D</th>
           </tr></thead>
           <tbody id="d2Body"></tbody>
         </table>
@@ -125,14 +117,10 @@
       </div>
       <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
         <table class="rankings-table text-xs sm:text-sm">
-          <colgroup><col class="col-rank"/><col class="col-team"/><col/><col class="col-stat"/><col class="col-stat"/><col class="col-stat"/></colgroup>
+          <colgroup><col class="col-rank"/><col/></colgroup>
           <thead><tr style="background:#000e27;color:#fff;">
-            <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">#</th>
+            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">#</th>
             <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
-            <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider hidden sm:table-cell">Conference</th>
-            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">W</th>
-            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">L</th>
-            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">D</th>
           </tr></thead>
           <tbody id="d3Body"></tbody>
         </table>
@@ -191,31 +179,46 @@ function parseCSV(text) {
   });
 }
 
-function buildRows(rows) {
-  if (rows.length === 0) return null;
-  return rows.map((r, i) => {
-    const rank = parseInt(r.rank || i + 1);
-    const isTop3 = rank <= 3;
+const MENS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?output=csv';
+
+function buildRankRows(names, logoByName) {
+  if (names.length === 0) return null;
+  return names.map((n, i) => {
+    const isTop3 = i < 3;
+    const logo = logoByName[n.toLowerCase()] || '';
     return `<tr style="border-bottom:1px solid #e5e7eb;background:${isTop3 ? '#fafbff' : i % 2 === 0 ? '#fff' : '#f9fafb'};">
-      <td class="px-4 py-3 font-bold text-center text-sm" style="color:${isTop3 ? '#b22234' : '#747780'};">${rank}</td>
-      <td class="px-4 py-3 font-semibold text-sm" style="color:#000e27;">${r.team || '-'}</td>
-      <td class="px-4 py-3 text-sm hidden sm:table-cell" style="color:#44474f;">${r.conference || '-'}</td>
-      <td class="px-4 py-3 text-center font-semibold text-sm" style="color:#2e7d52;">${r.w || '0'}</td>
-      <td class="px-4 py-3 text-center font-semibold text-sm" style="color:#b22234;">${r.l || '0'}</td>
-      <td class="px-4 py-3 text-center text-sm" style="color:#44474f;">${r.d || '0'}</td>
+      <td class="px-2 sm:px-4 py-2.5 font-bold text-center text-sm" style="color:${isTop3 ? '#b22234' : '#747780'};">${i + 1}</td>
+      <td class="px-2 sm:px-4 py-2.5">
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${logo ? `<img src="${logo}" alt="" loading="lazy" style="width:26px;height:26px;object-fit:contain;border-radius:5px;background:#f3f4f6;flex-shrink:0;" onerror="this.style.display='none'">` : '<span style="width:26px;flex-shrink:0;"></span>'}
+          <span class="font-semibold text-sm" style="color:#000e27;">${n}</span>
+        </div>
+      </td>
     </tr>`;
   }).join('');
 }
 
 async function loadRankings() {
   try {
-    const res = await fetch(RANKINGS_CSV_URL);
-    const text = await res.text();
-    const all = parseCSV(text);
-    const d1 = all.filter(r => (r.division || '').toUpperCase() === 'D1');
-    const d2 = all.filter(r => (r.division || '').toUpperCase() === 'D2');
-    const d3 = all.filter(r => (r.division || '').toUpperCase() === 'D3');
-    const d1html = buildRows(d1); const d2html = buildRows(d2); const d3html = buildRows(d3);
+    const [rankText, mensText] = await Promise.all([
+      fetch(RANKINGS_CSV_URL).then(r => r.text()),
+      fetch(MENS_CSV_URL).then(r => r.text()),
+    ]);
+    const logoByName = {};
+    parseCSV(mensText).forEach(m => {
+      const n = (m.name || '').trim().toLowerCase();
+      if (n && (m.logo || '').trim()) logoByName[n] = m.logo.trim();
+    });
+    const lists = { d1: [], d2: [], d3: [] };
+    parseCSV(rankText).forEach(r => {
+      ['d1', 'd2', 'd3'].forEach(k => {
+        const n = (r[k] || '').trim();
+        if (n) lists[k].push(n);
+      });
+    });
+    const d1html = buildRankRows(lists.d1, logoByName);
+    const d2html = buildRankRows(lists.d2, logoByName);
+    const d3html = buildRankRows(lists.d3, logoByName);
     if (d1html) document.getElementById('d1Body').innerHTML = d1html; else document.getElementById('d1Empty').classList.remove('hidden');
     if (d2html) document.getElementById('d2Body').innerHTML = d2html; else document.getElementById('d2Empty').classList.remove('hidden');
     if (d3html) document.getElementById('d3Body').innerHTML = d3html; else document.getElementById('d3Empty').classList.remove('hidden');
