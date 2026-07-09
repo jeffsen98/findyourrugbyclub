@@ -421,7 +421,9 @@ function renderAll() {
     const color = COLORS[t.division] || '#888';
     const rows = [
       t.practicelocation && { label: 'Practice', value: t.practicelocation },
-      t.contact && { label: 'Contact', value: t.contact },
+      t.contactname && { label: 'Contact', value: t.contactname },
+      t.phone && { label: 'Phone', value: t.phone },
+      t.contact && { label: 'Email', value: t.contact },
     ].filter(Boolean);
     const detailHtml = rows.map(r => `
       <div style="display:flex;gap:8px;margin-bottom:6px;">
