@@ -220,7 +220,7 @@ async function loadRankings() {
     if (d2html) document.getElementById('d2Body').innerHTML = d2html; else document.getElementById('d2Empty').classList.remove('hidden');
     if (d3html) document.getElementById('d3Body').innerHTML = d3html; else document.getElementById('d3Empty').classList.remove('hidden');
     document.getElementById('loadingState').classList.add('hidden');
-    document.getElementById('tablesWrap').classList.remove('hidden');
+    if (activeView === 'rankings') document.getElementById('tablesWrap').classList.remove('hidden');
   } catch (e) {
     document.getElementById('loadingState').classList.add('hidden');
     document.getElementById('errorState').classList.remove('hidden');
