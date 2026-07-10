@@ -69,20 +69,20 @@
     <p class="text-sm font-medium" style="color:#747780;">Loading rankings...</p>
   </div>
 
-  <div id="tablesWrap" class="hidden max-w-7xl mx-auto px-3 sm:px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+  <div id="tablesWrap" class="hidden max-w-7xl mx-auto px-1 sm:px-6 py-12 grid grid-cols-3 gap-1.5 sm:gap-8 items-start">
 
     <!-- D1 -->
     <div>
       <div class="flex items-center gap-3 mb-4">
-        <span class="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider text-white" style="background:#b22234;">D1</span>
-        <h2 class="text-2xl font-extrabold" style="color:#000e27;">Premier</h2>
+        <span class="px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-black uppercase tracking-wider text-white" style="background:#b22234;">D1</span>
+        <h2 class="text-sm sm:text-2xl font-extrabold" style="color:#000e27;">Premier</h2>
       </div>
       <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
         <table class="rankings-table text-xs sm:text-sm">
           <colgroup><col class="col-rank"/><col/></colgroup>
           <thead><tr style="background:#000e27;color:#fff;">
-            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">#</th>
-            <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
+            <th class="px-0.5 sm:px-4 py-2 sm:py-3 text-center font-bold text-[10px] sm:text-xs uppercase tracking-wider">#</th>
+            <th class="px-1 sm:px-4 py-2 sm:py-3 text-left font-bold text-[10px] sm:text-xs uppercase tracking-wider">Team</th>
           </tr></thead>
           <tbody id="d1Body"></tbody>
         </table>
@@ -93,15 +93,15 @@
     <!-- D2 -->
     <div>
       <div class="flex items-center gap-3 mb-4">
-        <span class="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider text-white" style="background:#1a4f8a;">D2</span>
-        <h2 class="text-2xl font-extrabold" style="color:#000e27;">Championship</h2>
+        <span class="px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-black uppercase tracking-wider text-white" style="background:#1a4f8a;">D2</span>
+        <h2 class="text-sm sm:text-2xl font-extrabold" style="color:#000e27;">Championship</h2>
       </div>
       <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
         <table class="rankings-table text-xs sm:text-sm">
           <colgroup><col class="col-rank"/><col/></colgroup>
           <thead><tr style="background:#000e27;color:#fff;">
-            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">#</th>
-            <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
+            <th class="px-0.5 sm:px-4 py-2 sm:py-3 text-center font-bold text-[10px] sm:text-xs uppercase tracking-wider">#</th>
+            <th class="px-1 sm:px-4 py-2 sm:py-3 text-left font-bold text-[10px] sm:text-xs uppercase tracking-wider">Team</th>
           </tr></thead>
           <tbody id="d2Body"></tbody>
         </table>
@@ -112,15 +112,15 @@
     <!-- D3 -->
     <div>
       <div class="flex items-center gap-3 mb-4">
-        <span class="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider text-white" style="background:#c17f24;">D3</span>
-        <h2 class="text-2xl font-extrabold" style="color:#000e27;">Community</h2>
+        <span class="px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-black uppercase tracking-wider text-white" style="background:#c17f24;">D3</span>
+        <h2 class="text-sm sm:text-2xl font-extrabold" style="color:#000e27;">Community</h2>
       </div>
       <div class="rounded-2xl overflow-hidden border" style="border-color:#c4c6d0;">
         <table class="rankings-table text-xs sm:text-sm">
           <colgroup><col class="col-rank"/><col/></colgroup>
           <thead><tr style="background:#000e27;color:#fff;">
-            <th class="px-2 sm:px-4 py-3 text-center font-bold text-xs uppercase tracking-wider">#</th>
-            <th class="px-2 sm:px-4 py-3 text-left font-bold text-xs uppercase tracking-wider">Team</th>
+            <th class="px-0.5 sm:px-4 py-2 sm:py-3 text-center font-bold text-[10px] sm:text-xs uppercase tracking-wider">#</th>
+            <th class="px-1 sm:px-4 py-2 sm:py-3 text-left font-bold text-[10px] sm:text-xs uppercase tracking-wider">Team</th>
           </tr></thead>
           <tbody id="d3Body"></tbody>
         </table>
@@ -194,11 +194,11 @@ function buildRankRows(entries) {
   return entries.map((e, i) => {
     const isTop3 = i < 3;
     return `<tr style="border-bottom:1px solid #e5e7eb;background:${isTop3 ? '#fafbff' : i % 2 === 0 ? '#fff' : '#f9fafb'};">
-      <td class="px-2 sm:px-3 py-2.5 font-bold text-center text-sm" style="color:${isTop3 ? '#b22234' : '#747780'};">${i + 1}</td>
-      <td class="px-2 sm:px-3 py-2.5">
-        <div style="display:flex;align-items:center;gap:10px;">
-          ${e.crest ? `<img src="${e.crest}" alt="" loading="lazy" style="width:26px;height:26px;object-fit:contain;border-radius:5px;background:#f3f4f6;flex-shrink:0;" onerror="this.style.display='none'">` : '<span style="width:26px;flex-shrink:0;"></span>'}
-          <span class="font-semibold text-sm" style="color:#000e27;">${e.name}</span>
+      <td class="px-0.5 sm:px-3 py-2 sm:py-2.5 font-bold text-center text-[10px] sm:text-sm" style="color:${isTop3 ? '#b22234' : '#747780'};">${i + 1}</td>
+      <td class="px-1 sm:px-3 py-2 sm:py-2.5">
+        <div class="flex items-center gap-1.5 sm:gap-2.5">
+          ${e.crest ? `<img src="${e.crest}" alt="" loading="lazy" class="w-4 h-4 sm:w-6 sm:h-6 flex-shrink-0" style="object-fit:contain;border-radius:4px;background:#f3f4f6;" onerror="this.style.display='none'">` : '<span class="w-4 sm:w-6 flex-shrink-0"></span>'}
+          <span class="font-semibold text-[11px] sm:text-sm leading-tight" style="color:#000e27;">${e.name}</span>
         </div>
       </td>
     </tr>`;
