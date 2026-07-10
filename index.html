@@ -432,7 +432,7 @@ function renderAll() {
       </div>`).join('') +
       (t.website ? `<a style="display:inline-block;margin-top:10px;padding:5px 14px;background:#b22234;color:#fff;border-radius:8px;font-size:0.75rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.05em;" href="https://${t.website.replace(/^https?:\/\//,'')}" target="_blank">Visit Website</a>` : '');
     return `
-    <div data-id="${t._id}" data-div="${getDivisions(t.division)[0] || ''}" ${t.logo ? `data-logo="${t.logo.replace(/"/g, '&quot;')}"` : ''} style="background:#fff;border:1px solid ${isOpen ? '#000e27' : '#c4c6d0'};border-radius:1rem;overflow:hidden;transition:border-color 0.15s;${isOpen ? 'box-shadow:0 4px 12px rgba(0,0,0,0.1);' : ''}" onmouseover="if(!${isOpen})this.style.borderColor='#000e27'" onmouseout="if(!${isOpen})this.style.borderColor='#c4c6d0'">
+    <div data-id="${t._id}" style="background:#fff;border:1px solid ${isOpen ? '#000e27' : '#c4c6d0'};border-radius:1rem;overflow:hidden;transition:border-color 0.15s;${isOpen ? 'box-shadow:0 4px 12px rgba(0,0,0,0.1);' : ''}" onmouseover="if(!${isOpen})this.style.borderColor='#000e27'" onmouseout="if(!${isOpen})this.style.borderColor='#c4c6d0'">
       <div onclick="openDetail(${t._id})" style="padding:1rem;cursor:pointer;display:flex;align-items:flex-start;gap:12px;">
         ${divBadgeHtml(t.division)}
         <div style="flex:1;min-width:0;">
@@ -444,93 +444,6 @@ function renderAll() {
       ${isOpen ? `<div style="padding:1rem;background:#0d1f3c;border-top:1px solid #1a3a6a;">${detailHtml}</div>` : ''}
     </div>`;
   }).join('');
-  applyCardGradients();
-}
-
-// ---- Card gradient tinting from club logo colors ----
-const logoColorCache = new Map();
-
-function extractLogoColors(url) {
-  if (logoColorCache.has(url)) return Promise.resolve(logoColorCache.get(url));
-  return new Promise(resolve => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      try {
-        const size = 24;
-        const canvas = document.createElement('canvas');
-        canvas.width = size; canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, size, size);
-        const data = ctx.getImageData(0, 0, size, size).data;
-        function sample(strict) {
-          const buckets = {};
-          for (let i = 0; i < data.length; i += 4) {
-            const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
-            if (a < 128) continue;
-            const max = Math.max(r, g, b), min = Math.min(r, g, b);
-            if (max > 235 && min > 225) continue;      // near-white always excluded
-            if (strict) {
-              if (max < 40) continue;                   // near-black
-              if (max - min < 20) continue;             // gray
-            }
-            const key = (r >> 5) + ',' + (g >> 5) + ',' + (b >> 5);
-            const bk = buckets[key] || (buckets[key] = { n: 0, r: 0, g: 0, b: 0 });
-            bk.n++; bk.r += r; bk.g += g; bk.b += b;
-          }
-          return Object.values(buckets).sort((x, y) => y.n - x.n).slice(0, 2)
-            .map(bk => [Math.round(bk.r / bk.n), Math.round(bk.g / bk.n), Math.round(bk.b / bk.n)]);
-        }
-        let top = sample(true);
-        if (top.length === 0) top = sample(false);      // b/w logos: use their grays/blacks
-        const cols = top.length === 0 ? null : (top.length === 1 ? [top[0], top[0]] : top);
-        logoColorCache.set(url, cols);
-        resolve(cols);
-      } catch (e) {
-        logoColorCache.set(url, null);
-        resolve(null);
-      }
-    };
-    img.onerror = () => { logoColorCache.set(url, null); resolve(null); };
-    img.src = url;
-  });
-}
-
-function hexToRgb(hex) {
-  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
-  return m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : null;
-}
-
-function tintCard(el, cols) {
-  const [c1, c2] = cols;
-  el.style.background = `linear-gradient(135deg, rgba(${c1[0]},${c1[1]},${c1[2]},0.16) 0%, rgba(${c2[0]},${c2[1]},${c2[2]},0.10) 55%, #fff 100%)`;
-}
-
-function divisionTint(el) {
-  const rgb = hexToRgb(COLORS[el.dataset.div]);
-  if (rgb) tintCard(el, [rgb, rgb]);
-}
-
-let gradientObserver = null;
-function applyCardGradients() {
-  if (gradientObserver) gradientObserver.disconnect();
-  gradientObserver = new IntersectionObserver(entries => {
-    entries.forEach(en => {
-      if (!en.isIntersecting) return;
-      gradientObserver.unobserve(en.target);
-      const el = en.target;
-      if (el.dataset.logo) {
-        extractLogoColors(el.dataset.logo).then(cols => {
-          if (!el.isConnected) return;
-          if (cols) tintCard(el, cols);
-          else divisionTint(el);
-        });
-      } else {
-        divisionTint(el);
-      }
-    });
-  }, { rootMargin: '200px' });
-  document.querySelectorAll('#teamList [data-id]').forEach(el => gradientObserver.observe(el));
 }
 
 function rehomeMap() {
