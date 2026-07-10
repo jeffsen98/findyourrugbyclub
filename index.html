@@ -65,7 +65,7 @@
     <div class="text-2xl font-extrabold text-white mb-1 flex items-center gap-3">
       <img src="fyrc-logo.png" alt="Find Your Rugby Club" class="h-10 w-auto object-contain"/> Find Your Rugby Club
     </div>
-    <p class="text-sm text-silver mb-5">USA Club Rugby Directory - here's how to get started:</p>
+    <p class="text-sm text-silver mb-5">The nationwide rugby club directory - here's how to get started:</p>
     <ul class="space-y-3 mb-6">
       <li class="flex gap-3 text-sm text-white">
         <span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-base" style="background:rgba(178,34,52,0.2);border:1px solid rgba(178,34,52,0.3)">&#x1F5FA;</span>
@@ -135,10 +135,14 @@
     <div class="max-w-3xl w-full text-center space-y-6">
       <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">Find Your Local Rugby Club</h1>
       <p class="text-lg max-w-xl mx-auto" style="color:#44474f;">Explore active clubs across the United States. Find a team and get on the pitch.</p>
-      <div class="flex justify-center">
+      <div class="flex justify-center gap-2 sm:gap-3 flex-wrap">
         <div class="inline-flex rounded-full p-1" style="background:#eef0f4;border:1px solid #c4c6d0;">
-          <button id="mensTab" onclick="switchLeague('mens')" class="px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:#000e27;color:#fff;">Men's</button>
-          <button id="womensTab" onclick="switchLeague('womens')" class="px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:transparent;color:#44474f;">Women's</button>
+          <button id="unionTab" onclick="switchSport('union')" class="px-4 sm:px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:#b22234;color:#fff;">Union</button>
+          <button id="leagueTab" onclick="switchSport('league')" class="px-4 sm:px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:transparent;color:#44474f;">League</button>
+        </div>
+        <div class="inline-flex rounded-full p-1" style="background:#eef0f4;border:1px solid #c4c6d0;">
+          <button id="mensTab" onclick="switchLeague('mens')" class="px-4 sm:px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:#000e27;color:#fff;">Men's</button>
+          <button id="womensTab" onclick="switchLeague('womens')" class="px-4 sm:px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:transparent;color:#44474f;">Women's</button>
         </div>
       </div>
       <div class="max-w-2xl mx-auto">
@@ -187,11 +191,11 @@
           <!-- Detail panel -->
 
           <!-- Legend -->
-          <div class="absolute top-3 right-3 rounded-xl px-3 py-2 text-xs" style="background:rgba(13,31,60,0.95);border:1px solid #1a3a6a;z-index:400;color:#a8b4c8;">
-            <div class="font-bold text-white mb-1.5 uppercase tracking-wider" style="font-size:10px;">Division</div>
-            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#b22234;"></span> D1 - Premier</div>
-            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#1a4f8a;"></span> D2 - Championship</div>
-            <div class="flex items-center gap-2 mb-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#c17f24;"></span> D3 - Community</div>
+          <div id="mapLegend" class="absolute top-2 right-2 sm:top-3 sm:right-3 rounded-lg sm:rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 text-[9px] sm:text-xs" style="background:rgba(13,31,60,0.95);border:1px solid #1a3a6a;z-index:400;color:#a8b4c8;">
+            <div class="font-bold text-white mb-1 sm:mb-1.5 uppercase tracking-wider text-[8px] sm:text-[10px]">Division</div>
+            <div class="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1"><span class="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full inline-block" style="background:#b22234;"></span> D1 - Premier</div>
+            <div class="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1"><span class="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full inline-block" style="background:#1a4f8a;"></span> D2 - Championship</div>
+            <div class="flex items-center gap-1.5 sm:gap-2"><span class="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full inline-block" style="background:#c17f24;"></span> D3 - Community</div>
           </div>
         </div>
       </div>
@@ -206,7 +210,7 @@
     <p class="text-xs text-center" style="color:#a8b4c8;">This is an unofficial, fan-made community directory. Not affiliated with, endorsed by, or sponsored by USA Rugby.</p>
     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-4">
-        <span class="text-xs" style="color:#747780;">&#169; 2026 USA Club Rugby Directory</span>
+        <span class="text-xs" style="color:#747780;">&#169; 2026 Find Your Rugby Club</span>
         <span style="color:#747780;">|</span>
         <nav class="flex gap-4">
           <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="privacy">Privacy</a>
@@ -221,9 +225,11 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub';
-const LEAGUE_URLS = {
-  mens: SHEET_BASE + '?output=csv',
-  womens: SHEET_BASE + '?gid=2086082072&single=true&output=csv',
+const TAB_URLS = {
+  union_mens: SHEET_BASE + '?output=csv',
+  union_womens: SHEET_BASE + '?gid=2086082072&single=true&output=csv',
+  league_mens: SHEET_BASE + '?gid=LEAGUE_MENS_GID_HERE&single=true&output=csv',
+  league_womens: SHEET_BASE + '?gid=LEAGUE_WOMENS_GID_HERE&single=true&output=csv',
 };
 
 const COLORS = { D1: '#b22234', D2: '#1a4f8a', D3: '#c17f24' };
@@ -241,7 +247,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
 }).addTo(map);
 
 const STATE_NAMES = {'alabama':'AL','alaska':'AK','arizona':'AZ','arkansas':'AR','california':'CA','colorado':'CO','connecticut':'CT','delaware':'DE','florida':'FL','georgia':'GA','hawaii':'HI','idaho':'ID','illinois':'IL','indiana':'IN','iowa':'IA','kansas':'KS','kentucky':'KY','louisiana':'LA','maine':'ME','maryland':'MD','massachusetts':'MA','michigan':'MI','minnesota':'MN','mississippi':'MS','missouri':'MO','montana':'MT','nebraska':'NE','nevada':'NV','new hampshire':'NH','new jersey':'NJ','new mexico':'NM','new york':'NY','north carolina':'NC','north dakota':'ND','ohio':'OH','oklahoma':'OK','oregon':'OR','pennsylvania':'PA','rhode island':'RI','south carolina':'SC','south dakota':'SD','tennessee':'TN','texas':'TX','utah':'UT','vermont':'VT','virginia':'VA','washington':'WA','west virginia':'WV','wisconsin':'WI','wyoming':'WY'};
-let allTeams = [], markers = {}, activeDiv = 'all', searchTerm = '', activeTeamId = null, activeLeague = 'mens';
+let allTeams = [], markers = {}, activeDiv = 'all', searchTerm = '', activeTeamId = null, activeLeague = 'mens', activeSport = 'union';
 
 function getDivisions(division) {
   return (division || '').toUpperCase().split('/').map(d => d.trim()).filter(Boolean);
@@ -334,20 +340,24 @@ function parseCSV(text) {
     });
 }
 
-const leagueCache = {};
+const teamCache = {};
 
-async function loadTeams(league) {
-  league = league || activeLeague;
+function dataKey() {
+  return activeSport + '_' + activeLeague;
+}
+
+async function loadTeams() {
+  const key = dataKey();
   let teams = [];
-  if (leagueCache[league]) {
-    teams = leagueCache[league];
+  if (teamCache[key]) {
+    teams = teamCache[key];
   } else {
     try {
-      const res = await fetch(LEAGUE_URLS[league]);
+      const res = await fetch(TAB_URLS[key]);
       const text = await res.text();
       const parsed = parseCSV(text);
       if (parsed.length > 0) teams = parsed;
-      leagueCache[league] = teams;
+      teamCache[key] = teams;
     } catch (e) {
       console.warn('Could not load from Google Sheet:', e);
     }
@@ -365,7 +375,18 @@ function switchLeague(league) {
   const on = 'background:#000e27;color:#fff;', off = 'background:transparent;color:#44474f;';
   mens.style.cssText = league === 'mens' ? on : off;
   womens.style.cssText = league === 'womens' ? on : off;
-  loadTeams(league);
+  loadTeams();
+}
+
+function switchSport(sport) {
+  if (sport === activeSport) return;
+  activeSport = sport;
+  activeTeamId = null;
+  const union = document.getElementById('unionTab'), league = document.getElementById('leagueTab');
+  const on = 'background:#b22234;color:#fff;', off = 'background:transparent;color:#44474f;';
+  union.style.cssText = sport === 'union' ? on : off;
+  league.style.cssText = sport === 'league' ? on : off;
+  loadTeams();
 }
 
 function renderAll() {
