@@ -390,6 +390,7 @@ function switchSport(sport) {
   league.style.cssText = sport === 'league' ? on : off;
   // rugby league has no D1/D2/D3 - fade the division filters out and slide the page up
   document.getElementById('divFilters').classList.toggle('collapsed', sport === 'league');
+  document.getElementById('mapLegend').style.display = sport === 'league' ? 'none' : '';
   if (sport === 'league' && activeDiv !== 'all') {
     activeDiv = 'all';
     document.querySelectorAll('.filter-btn').forEach(b => {
@@ -468,7 +469,9 @@ function renderAll() {
     return `
     <div data-id="${t._id}" style="background:#fff;border:1px solid ${isOpen ? '#000e27' : '#c4c6d0'};border-radius:1rem;overflow:hidden;transition:border-color 0.15s;${isOpen ? 'box-shadow:0 4px 12px rgba(0,0,0,0.1);' : ''}" onmouseover="if(!${isOpen})this.style.borderColor='#000e27'" onmouseout="if(!${isOpen})this.style.borderColor='#c4c6d0'">
       <div onclick="openDetail(${t._id})" style="padding:1rem;cursor:pointer;display:flex;align-items:flex-start;gap:12px;">
-        ${divBadgeHtml(t.division)}
+        ${activeSport === 'league' && t.logo
+          ? `<img src="${t.logo.replace(/"/g, '&quot;')}" alt="" loading="lazy" style="width:40px;height:40px;object-fit:contain;border-radius:8px;background:#f3f4f6;flex-shrink:0;" onerror="this.style.visibility='hidden'">`
+          : divBadgeHtml(t.division)}
         <div style="flex:1;min-width:0;">
           <div style="font-weight:700;color:#000e27;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.name}</div>
           <div style="font-size:0.75rem;color:#747780;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.city || ''}${t.state ? ', ' + t.state : ''}${t.conference ? ' &middot; ' + t.conference : ''}</div>
