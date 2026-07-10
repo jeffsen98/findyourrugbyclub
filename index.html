@@ -177,12 +177,15 @@
 
       <!-- Map (collapsible on mobile) -->
       <div id="mapHome" class="lg:col-span-8 order-1 lg:order-2">
-        <button id="mapToggleBtn" onclick="toggleMap()" class="md:hidden w-full flex items-center justify-between px-4 py-3 rounded-xl mb-3 text-sm font-bold" style="background:#000e27;color:#fff;">
-          <span>Hide Map</span>
-          <svg id="mapChevron" class="w-4 h-4 transition-transform" style="transform:rotate(180deg)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        <button id="mapToggleBtn" onclick="toggleMap()" class="hidden md:!hidden w-full flex items-center justify-between px-4 py-3 rounded-xl mb-3 text-sm font-bold" style="background:#000e27;color:#fff;">
+          <span>Show Map</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div id="mapWrap" class="relative rounded-2xl overflow-hidden shadow-sm" style="height:580px;border:1px solid #c4c6d0;">
           <div id="map"></div>
+
+          <!-- In-map hide button (mobile) -->
+          <button onclick="toggleMap()" class="md:hidden absolute bottom-2 left-2 px-2.5 py-1 rounded-md text-[10px] font-bold" style="background:rgba(13,31,60,0.9);color:#fff;border:1px solid #1a3a6a;z-index:400;cursor:pointer;">Hide Map</button>
 
           <!-- Loading overlay -->
           <div id="loadingOverlay" class="absolute inset-0 flex flex-col items-center justify-center gap-3" style="background:rgba(0,14,39,0.82);z-index:2000;">
@@ -514,10 +517,7 @@ function openDetail(id) {
       wrap.style.height = '320px';
       wrap.style.scrollMarginTop = '76px';
       mapOpen = true;
-      const btn = document.getElementById('mapToggleBtn');
-      if (btn) { btn.querySelector('span').textContent = 'Hide Map'; }
-      const chevron = document.getElementById('mapChevron');
-      if (chevron) chevron.style.transform = 'rotate(180deg)';
+      document.getElementById('mapToggleBtn').classList.add('hidden');
       map.invalidateSize();
       wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -593,16 +593,13 @@ function toggleMap() {
   mapOpen = !mapOpen;
   const wrap = document.getElementById('mapWrap');
   const btn = document.getElementById('mapToggleBtn');
-  const chevron = document.getElementById('mapChevron');
   if (mapOpen) {
     wrap.classList.remove('hidden');
-    btn.querySelector('span').textContent = 'Hide Map';
-    chevron.style.transform = 'rotate(180deg)';
+    btn.classList.add('hidden');
     map.invalidateSize();
   } else {
     wrap.classList.add('hidden');
-    btn.querySelector('span').textContent = 'Show Map';
-    chevron.style.transform = 'rotate(0deg)';
+    btn.classList.remove('hidden');
   }
 }
 </script>
