@@ -61,6 +61,12 @@
       <h1 id="pageTitle" class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">Club Rankings</h1>
       <p class="text-lg max-w-xl mx-auto" style="color:#44474f;">Current standings across all divisions. Updated regularly.</p>
       <p id="rankingsNote" class="text-sm max-w-2xl mx-auto mt-2" style="color:#747780;">Rankings are determined by a combination of strength of schedule, point differential, roster depth, and other key factors in the evaluation process.</p>
+      <div id="genderPillWrap" class="flex justify-center mt-6">
+        <div class="inline-flex rounded-full p-1" style="background:#eef0f4;border:1px solid #c4c6d0;">
+          <button id="rankMensTab" onclick="switchGender('mens')" class="px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:#000e27;color:#fff;">Men's</button>
+          <button id="rankWomensTab" onclick="switchGender('womens')" class="px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:transparent;color:#44474f;">Women's</button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -164,7 +170,22 @@
 </footer>
 
 <script>
-const RANKINGS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?gid=1696848951&single=true&output=csv';
+const RANKINGS_URLS = {
+  mens: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?gid=1696848951&single=true&output=csv',
+  womens: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?gid=WOMENS_RANKINGS_GID_HERE&single=true&output=csv',
+};
+let activeGender = 'mens';
+const rankTextCache = {};
+
+function switchGender(g) {
+  if (g === activeGender) return;
+  activeGender = g;
+  const m = document.getElementById('rankMensTab'), w = document.getElementById('rankWomensTab');
+  const on = 'background:#000e27;color:#fff;', off = 'background:transparent;color:#44474f;';
+  m.style.cssText = g === 'mens' ? on : off;
+  w.style.cssText = g === 'womens' ? on : off;
+  loadRankings();
+}
 const LADDER_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?gid=1760288486&single=true&output=csv';
 const DIV_COLORS = { D1: '#b22234', D2: '#1a4f8a', D3: '#c17f24' };
 
@@ -207,7 +228,11 @@ function buildRankRows(entries) {
 
 async function loadRankings() {
   try {
-    const rankText = await fetch(RANKINGS_CSV_URL).then(r => r.text());
+    let rankText = rankTextCache[activeGender];
+    if (!rankText) {
+      rankText = await fetch(RANKINGS_URLS[activeGender]).then(r => r.text());
+      rankTextCache[activeGender] = rankText;
+    }
     const lists = { d1: [], d2: [], d3: [] };
     parseCSV(rankText).forEach(r => {
       ['d1', 'd2', 'd3'].forEach(k => {
@@ -238,6 +263,7 @@ function switchView(view) {
   document.getElementById('rankingsNote').textContent = isLadders
     ? 'Official competition standings, updated automatically each week.'
     : 'Rankings are determined by a combination of strength of schedule, point differential, roster depth, and other key factors in the evaluation process.';
+  document.getElementById('genderPillWrap').classList.toggle('hidden', isLadders);
   document.getElementById('tablesWrap').classList.toggle('hidden', isLadders);
   document.getElementById('laddersWrap').classList.toggle('hidden', !isLadders);
   document.querySelectorAll('a[href="rankings"]').forEach(a => {
