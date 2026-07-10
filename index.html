@@ -193,11 +193,11 @@
           <!-- Detail panel -->
 
           <!-- Legend -->
-          <div id="mapLegend" class="absolute top-2 right-2 sm:top-3 sm:right-3 rounded-lg sm:rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 text-[9px] sm:text-xs" style="background:rgba(13,31,60,0.95);border:1px solid #1a3a6a;z-index:400;color:#a8b4c8;">
-            <div class="font-bold text-white mb-1 sm:mb-1.5 uppercase tracking-wider text-[8px] sm:text-[10px]">Division</div>
-            <div class="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1"><span class="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full inline-block" style="background:#b22234;"></span> D1 - Premier</div>
-            <div class="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1"><span class="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full inline-block" style="background:#1a4f8a;"></span> D2 - Championship</div>
-            <div class="flex items-center gap-1.5 sm:gap-2"><span class="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full inline-block" style="background:#c17f24;"></span> D3 - Community</div>
+          <div id="mapLegend" class="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 rounded-md sm:rounded-xl px-1.5 py-1 sm:px-3 sm:py-2 text-[8px] sm:text-xs leading-tight" style="background:rgba(13,31,60,0.95);border:1px solid #1a3a6a;z-index:400;color:#a8b4c8;">
+            <div class="font-bold text-white mb-0.5 sm:mb-1.5 uppercase tracking-wider text-[7px] sm:text-[10px]">Division</div>
+            <div class="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1"><span class="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full inline-block" style="background:#b22234;"></span> D1<span class="hidden sm:inline"> - Premier</span></div>
+            <div class="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1"><span class="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full inline-block" style="background:#1a4f8a;"></span> D2<span class="hidden sm:inline"> - Championship</span></div>
+            <div class="flex items-center gap-1.5 sm:gap-2"><span class="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full inline-block" style="background:#c17f24;"></span> D3<span class="hidden sm:inline"> - Community</span></div>
           </div>
         </div>
       </div>
@@ -243,7 +243,7 @@ const DIV_STYLE = {
 const DIV_BG = { D1: 'rgba(178,34,52,0.12)', D2: 'rgba(26,79,138,0.12)', D3: 'rgba(193,127,36,0.12)' };
 const DIV_BORDER = { D1: 'rgba(178,34,52,0.4)', D2: 'rgba(26,79,138,0.4)', D3: 'rgba(193,127,36,0.4)' };
 
-const map = L.map('map', { zoomControl: true }).setView([39.5, -98.35], 4);
+const map = L.map('map', { zoomControl: true }).setView([39.5, -98.35], window.innerWidth < 768 ? 2.5 : 4);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
 }).addTo(map);
@@ -262,7 +262,7 @@ function createMarkerIcon(division) {
     return L.divIcon({
       className: '',
       html: `<div style="width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,${c1} 33%,${c2} 33%,${c2} 66%,${c3} 66%);border:2px solid rgba(255,255,255,0.6);box-shadow:0 2px 6px rgba(0,0,0,0.4)"></div>`,
-      iconSize: [14, 14], iconAnchor: [7, 7], popupAnchor: [0, -10]
+      iconSize: [14, 14], iconAnchor: [7, 7], popupAnchor: [0, 16]
     });
   }
   if (divs.length === 2) {
@@ -270,14 +270,14 @@ function createMarkerIcon(division) {
     return L.divIcon({
       className: '',
       html: `<div style="width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,${c1} 50%,${c2} 50%);border:2px solid rgba(255,255,255,0.6);box-shadow:0 2px 6px rgba(0,0,0,0.4)"></div>`,
-      iconSize: [14, 14], iconAnchor: [7, 7], popupAnchor: [0, -10]
+      iconSize: [14, 14], iconAnchor: [7, 7], popupAnchor: [0, 16]
     });
   }
   const color = COLORS[divs[0]] || '#888';
   return L.divIcon({
     className: '',
     html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid rgba(255,255,255,0.6);box-shadow:0 2px 6px rgba(0,0,0,0.4)"></div>`,
-    iconSize: [14, 14], iconAnchor: [7, 7], popupAnchor: [0, -10]
+    iconSize: [14, 14], iconAnchor: [7, 7], popupAnchor: [0, 16]
   });
 }
 
