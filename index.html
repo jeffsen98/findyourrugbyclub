@@ -457,7 +457,7 @@ function renderAll(listOnly) {
 
   // when zoomed in (and not searching), the directory follows the map frame
   let inView = false;
-  if (!q && window.innerWidth >= 1024 && map.getZoom() >= 5.5) {
+  if (!q && map.getZoom() >= 5.5) {
     const b = map.getBounds();
     const before = filtered.length;
     var listFiltered = filtered.filter(t => {
@@ -500,6 +500,12 @@ function renderAll(listOnly) {
     `${listFiltered.length} club${listFiltered.length !== 1 ? 's' : ''}${inView ? ' in view' : ''}`;
 
   const list = document.getElementById('teamList');
+  // On mobile the map element may be parked inside the list (above the opened
+  // club card) — pull it out before wiping innerHTML so it isn't destroyed
+  const wrap = document.getElementById('mapWrap');
+  const wrapWasInList = wrap && list.contains(wrap);
+  if (wrapWasInList) rehomeMap();
+
   if (listFiltered.length === 0) {
     list.innerHTML = '<div style="text-align:center;color:#747780;padding:2rem;font-size:0.875rem;">' +
       (inView ? 'No clubs in this map area. Zoom out to see more.' : 'No clubs match your search.') + '</div>';
@@ -536,6 +542,16 @@ function renderAll(listOnly) {
       ${isOpen ? `<div style="padding:1rem;background:#0d1f3c;border-top:1px solid #1a3a6a;">${detailHtml}</div>` : ''}
     </div>`;
   }).join('');
+
+  // put the map back above the open club card if it was there before the rebuild
+  if (wrapWasInList && activeTeamId !== null) {
+    const card = list.querySelector(`[data-id="${activeTeamId}"]`);
+    if (card) {
+      card.parentNode.insertBefore(wrap, card);
+      wrap.style.height = '320px';
+      map.invalidateSize();
+    }
+  }
 }
 
 function rehomeMap() {
@@ -644,7 +660,6 @@ document.getElementById('searchInput').addEventListener('input', e => {
 
 let moveTimer;
 map.on('moveend', () => {
-  if (window.innerWidth < 1024) return;
   clearTimeout(moveTimer);
   moveTimer = setTimeout(() => renderAll(true), 250);
 });
