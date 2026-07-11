@@ -11,6 +11,10 @@
   body { font-family: 'Inter', sans-serif; }
   .stats-table { width:100%; border-collapse:collapse; }
   #playerBoards .stats-table { table-layout:fixed; }
+  @media (max-width: 639px) {
+    #teamTableWrap th, #teamTableWrap td { padding-left: 3px !important; padding-right: 3px !important; font-size: 10px !important; }
+    #teamTableWrap td div span { font-size: 10px; }
+  }
   #playerBoards .stats-table th:first-child, #playerBoards .stats-table td:first-child { width:28px; }
   #playerBoards .stats-table th:last-child, #playerBoards .stats-table td:last-child { width:40px; }
   .stats-table th { cursor: pointer; user-select: none; }
@@ -126,8 +130,8 @@ const TEAM_COLS = [
   { key: 'w', label: 'W', num: true },
   { key: 'l', label: 'L', num: true },
   { key: 'd', label: 'D', num: true },
-  { key: 'pf', label: 'PF', num: true },
-  { key: 'pa', label: 'PA', num: true },
+  { key: 'pf', label: 'PF', num: true, hideMobile: true },
+  { key: 'pa', label: 'PA', num: true, hideMobile: true },
   { key: 'pd', label: 'PD', num: true },
 ];
 const PLAYER_COLS = [
