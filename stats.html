@@ -79,13 +79,14 @@
     <p class="text-sm font-medium" style="color:#747780;">Loading stats...</p>
   </div>
 
-  <div id="statsWrap" class="hidden max-w-5xl mx-auto px-2 sm:px-6 py-12">
-    <div class="rounded-2xl overflow-x-auto border bg-white" style="border-color:#c4c6d0;">
+  <div id="statsWrap" class="hidden max-w-6xl mx-auto px-2 sm:px-6 py-12">
+    <div id="teamTableWrap" class="rounded-2xl overflow-x-auto border bg-white" style="border-color:#c4c6d0;">
       <table class="stats-table text-xs sm:text-sm">
         <thead id="statHead"></thead>
         <tbody id="statBody"></tbody>
       </table>
     </div>
+    <div id="playerBoards" class="hidden grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 items-start"></div>
     <p id="statEmpty" class="hidden text-sm text-center py-10" style="color:#747780;"></p>
     <p class="text-xs text-right mt-3" style="color:#a8b4c8;">Updated from official competition data</p>
   </div>
@@ -174,9 +175,62 @@ async function loadStats() {
   render(rows);
 }
 
+function leaderBoard(title, color, rows, valueKey, valueLabel) {
+  const top = rows
+    .filter(r => (parseFloat(r[valueKey]) || 0) > 0)
+    .sort((a, b) => (parseFloat(b[valueKey]) || 0) - (parseFloat(a[valueKey]) || 0) || (parseFloat(b.points) || 0) - (parseFloat(a.points) || 0))
+    .slice(0, 20);
+  const body = top.length === 0
+    ? `<tr><td colspan="3" class="px-3 py-6 text-center text-xs" style="color:#747780;">None recorded yet</td></tr>`
+    : top.map((r, i) => `
+      <tr style="border-bottom:1px solid #eef0f4;background:${i < 3 ? '#fafbff' : i % 2 === 0 ? '#fff' : '#f9fafb'};">
+        <td class="px-1.5 sm:px-2.5 py-2 font-bold text-center text-[10px] sm:text-xs" style="color:${i < 3 ? color : '#747780'};">${i + 1}</td>
+        <td class="px-1 sm:px-2 py-2">
+          <div class="font-semibold text-[11px] sm:text-sm leading-tight" style="color:#000e27;">${r.player}</div>
+          <div class="text-[9px] sm:text-[11px]" style="color:#747780;">${r.team || ''}</div>
+        </td>
+        <td class="px-1.5 sm:px-2.5 py-2 text-center font-extrabold text-[11px] sm:text-sm" style="color:${color};">${r[valueKey]}</td>
+      </tr>`).join('');
+  return `<div class="rounded-2xl overflow-hidden border bg-white" style="border-color:#c4c6d0;">
+    <div class="px-3 py-2.5 font-extrabold text-[11px] sm:text-sm uppercase tracking-wider text-white" style="background:${color};">${title}</div>
+    <table class="stats-table text-xs sm:text-sm">
+      <thead><tr style="background:#f7f8fa;color:#747780;border-bottom:1px solid #e5e7eb;">
+        <th class="px-1.5 sm:px-2.5 py-2 text-center font-bold text-[9px] sm:text-[10px] uppercase tracking-wider">#</th>
+        <th class="px-1 sm:px-2 py-2 text-left font-bold text-[9px] sm:text-[10px] uppercase tracking-wider">Player</th>
+        <th class="px-1.5 sm:px-2.5 py-2 text-center font-bold text-[9px] sm:text-[10px] uppercase tracking-wider">${valueLabel}</th>
+      </tr></thead>
+      <tbody>${body}</tbody>
+    </table>
+  </div>`;
+}
+
 function render(rows) {
-  const cols = statView === 'team' ? TEAM_COLS : PLAYER_COLS;
   const filtered = rows.filter(r => (r.gender || 'M').toUpperCase().startsWith(statGender));
+  const teamWrap = document.getElementById('teamTableWrap');
+  const boards = document.getElementById('playerBoards');
+  const empty = document.getElementById('statEmpty');
+  empty.classList.add('hidden');
+
+  if (statView === 'player') {
+    teamWrap.classList.add('hidden');
+    boards.classList.remove('hidden');
+    if (filtered.length === 0) {
+      boards.innerHTML = '';
+      empty.textContent = 'No player stats yet - they will appear here as they are recorded.';
+      empty.classList.remove('hidden');
+      return;
+    }
+    boards.innerHTML =
+      leaderBoard('Points Leaders', '#b22234', filtered, 'points', 'Pts') +
+      leaderBoard('Try Leaders', '#1a4f8a', filtered, 'tries', 'Tries') +
+      leaderBoard('Yellow Cards', '#c17f24', filtered, 'yellow', 'YC') +
+      leaderBoard('Red Cards', '#8a1a1a', filtered, 'red', 'RC');
+    return;
+  }
+
+  boards.classList.add('hidden');
+  teamWrap.classList.remove('hidden');
+  const cols = TEAM_COLS;
   filtered.sort((a, b) => {
     const av = a[sortKey] || '', bv = b[sortKey] || '';
     const col = cols.find(c => c.key === sortKey);
@@ -189,16 +243,12 @@ function render(rows) {
     ${cols.map(c => `<th onclick="setSort('${c.key}')" class="px-2 sm:px-3 py-2.5 ${c.num ? 'text-center' : 'text-left'} font-bold text-[10px] sm:text-xs uppercase tracking-wider ${c.hideMobile ? 'hidden sm:table-cell' : ''}">${c.label}${sortKey === c.key ? (sortDesc ? ' &#9660;' : ' &#9650;') : ''}</th>`).join('')}
   </tr>`;
 
-  const empty = document.getElementById('statEmpty');
   if (filtered.length === 0) {
     document.getElementById('statBody').innerHTML = '';
-    empty.textContent = statView === 'player'
-      ? 'No player stats yet - they will appear here as they are recorded.'
-      : 'No team stats available yet.';
+    empty.textContent = 'No team stats available yet.';
     empty.classList.remove('hidden');
     return;
   }
-  empty.classList.add('hidden');
 
   document.getElementById('statBody').innerHTML = filtered.map((r, i) => `
     <tr style="border-bottom:1px solid #eef0f4;background:${i < 3 ? '#fafbff' : i % 2 === 0 ? '#fff' : '#f9fafb'};">
