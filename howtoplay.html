@@ -87,19 +87,74 @@
       </div>
     </div>
 
-    <div class="space-y-3">
+    <div class="space-y-4">
       <h2 class="text-2xl font-bold" style="color:#000e27;">Positions</h2>
-      <p class="text-base leading-relaxed" style="color:#44474f;">One of rugby's best traits: <strong>there is a position for every body type</strong>. The 15 players split into two groups:</p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="p-5 rounded-2xl border" style="border-color:#c4c6d0;">
-          <div class="text-xs font-black uppercase tracking-widest mb-1" style="color:#b22234;">Forwards (1-8)</div>
-          <p class="text-sm" style="color:#44474f;">The engine room. Props, hookers, locks, flankers, and the number 8 do the heavy contact work - scrums, lineouts, rucks, and mauls. Typically the bigger, stronger players who win the ball.</p>
-        </div>
-        <div class="p-5 rounded-2xl border" style="border-color:#c4c6d0;">
-          <div class="text-xs font-black uppercase tracking-widest mb-1" style="color:#1a4f8a;">Backs (9-15)</div>
-          <p class="text-sm" style="color:#44474f;">The playmakers and finishers. Scrum-half, fly-half, centers, wings, and fullback use speed, passing, and kicking to turn possession into points. Typically the faster, more agile players.</p>
+      <p class="text-base leading-relaxed" style="color:#44474f;">One of rugby&#39;s best traits: <strong>there is a position for every body type</strong>. Toggle between the two codes to see how each team lines up.</p>
+      <div class="flex">
+        <div class="inline-flex rounded-full p-1" style="background:#eef0f4;border:1px solid #c4c6d0;">
+          <button id="posUnionTab" onclick="switchPos('union')" class="px-5 py-1.5 rounded-full text-xs font-bold transition-all" style="background:#b22234;color:#fff;">Union (15s)</button>
+          <button id="posLeagueTab" onclick="switchPos('league')" class="px-5 py-1.5 rounded-full text-xs font-bold transition-all" style="background:transparent;color:#44474f;">League (13s)</button>
         </div>
       </div>
+      <div id="posUnion" class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">1 & 3</span><span class="font-bold text-sm" style="color:#000e27;">Props</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">Anchor the scrum on either side of the hooker. The strongest players on the field - first to every collision.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">2</span><span class="font-bold text-sm" style="color:#000e27;">Hooker</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">Hooks the ball back in scrums and throws into lineouts. Part front-rower, part precision passer.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">4 & 5</span><span class="font-bold text-sm" style="color:#000e27;">Locks</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">The tallest players - lineout jumpers and the engine of the scrum push.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">6 & 7</span><span class="font-bold text-sm" style="color:#000e27;">Flankers</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">Tackle machines. First to the breakdown, always contesting for the ball.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">8</span><span class="font-bold text-sm" style="color:#000e27;">Number 8</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">Controls the ball at the back of the scrum and carries hard in open play. A blend of power and skill.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">9</span><span class="font-bold text-sm" style="color:#000e27;">Scrum-half</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">The link between forwards and backs. Passes from every ruck - quick hands, quicker decisions.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">10</span><span class="font-bold text-sm" style="color:#000e27;">Fly-half</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">The playmaker. Directs the attack, kicks for territory and points - rugby&#39;s quarterback.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">12 & 13</span><span class="font-bold text-sm" style="color:#000e27;">Centers</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">Midfield power and creativity - crash through defenses or put teammates into space.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">11 & 14</span><span class="font-bold text-sm" style="color:#000e27;">Wings</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">The fastest players. Finish tries in the corners and chase every kick.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">15</span><span class="font-bold text-sm" style="color:#000e27;">Fullback</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">The last line of defense. Fields deep kicks and launches counter-attacks.</p>
+        </div></div>
+      <div id="posLeague" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3"><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">1</span><span class="font-bold text-sm" style="color:#000e27;">Fullback</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">Sweeps behind the defensive line, returns kicks, and joins the attack as an extra playmaker.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">2 & 5</span><span class="font-bold text-sm" style="color:#000e27;">Wingers</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">Speed on the edges - finish attacking movements and carry the ball out of trouble from deep.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">3 & 4</span><span class="font-bold text-sm" style="color:#000e27;">Centres</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">The strike weapons of the backline, combining with their winger to attack the edge.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">6</span><span class="font-bold text-sm" style="color:#000e27;">Five-Eighth</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">The chief playmaker (also called stand-off). Runs the attack alongside the halfback.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">7</span><span class="font-bold text-sm" style="color:#000e27;">Halfback</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">Organizes the team around the ruck, directs the sets, and controls the kicking game.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">8 & 10</span><span class="font-bold text-sm" style="color:#000e27;">Props</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">Big bodies who take the tough carries up the middle and set the platform each set of six.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">9</span><span class="font-bold text-sm" style="color:#000e27;">Hooker</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">Plays from dummy-half - scoops the ball after each play-the-ball. Touches the ball more than anyone.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">11 & 12</span><span class="font-bold text-sm" style="color:#000e27;">Second-Rowers</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">Athletic edge forwards - part power runner, part edge defender.</p>
+        </div><div class="p-4 rounded-xl border" style="border-color:#c4c6d0;">
+          <div class="flex items-baseline gap-2"><span class="text-xs font-black px-2 py-0.5 rounded-md text-white" style="background:#000e27;">13</span><span class="font-bold text-sm" style="color:#000e27;">Lock</span></div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:#44474f;">The loose forward - a do-everything link between the forwards and the backs.</p>
+        </div></div>
     </div>
 
     <div class="space-y-3">
@@ -125,7 +180,8 @@
 
     <div class="space-y-3">
       <h2 class="text-2xl font-bold" style="color:#000e27;">Union vs League</h2>
-      <p class="text-base leading-relaxed" style="color:#44474f;"><strong>Rugby union</strong> (15 a side) is the version most US clubs play, with contested rucks, scrums, and lineouts. <strong>Rugby league</strong> (13 a side) trades contested possession for a six-tackle set system - after six tackles the ball turns over, similar to downs in football. Faster resets, fewer stoppages, different rhythm. Both are represented in our directory - use the Union/League toggle on the home page.</p>
+      <p class="text-base leading-relaxed" style="color:#44474f;"><strong>Rugby union</strong> (15 a side) is the version most US clubs play, with contested rucks, scrums, and lineouts. It&#39;s the more popular code worldwide and in America largely because of its infrastructure: a century of established clubs, a deep college rugby pipeline, sevens in the Olympics, and the Rugby World Cup - which the US hosts in 2031. If you walk onto a random American rugby pitch, odds are it&#39;s union.</p>
+      <p class="text-base leading-relaxed" style="color:#44474f;"><strong>Rugby league</strong> (13 a side) trades contested possession for a six-tackle set system - after six tackles the ball turns over, similar to downs in football. Faster resets, fewer stoppages, and a rhythm American football fans pick up instantly. League is a fast-growing code in the US, with USARL conferences expanding on both coasts - and because the skills overlap heavily, plenty of players happily play both. Both codes are in our directory - use the Union/League toggle on the home page.</p>
     </div>
 
     <div class="space-y-3">
@@ -155,6 +211,16 @@
 </footer>
 
 <script>
+function switchPos(code) {
+  const u = document.getElementById('posUnion'), l = document.getElementById('posLeague');
+  const ut = document.getElementById('posUnionTab'), lt = document.getElementById('posLeagueTab');
+  const on = 'background:#b22234;color:#fff;', off = 'background:transparent;color:#44474f;';
+  u.classList.toggle('hidden', code !== 'union');
+  l.classList.toggle('hidden', code !== 'league');
+  ut.style.cssText = code === 'union' ? on : off;
+  lt.style.cssText = code === 'league' ? on : off;
+}
+
 function openDrawer() {
   document.getElementById('mobileDrawer').classList.remove('-translate-x-full');
   document.getElementById('drawerOverlay').classList.remove('hidden');
