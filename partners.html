@@ -4,12 +4,12 @@
 <meta charset="UTF-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link rel="icon" type="image/png" href="fyrc-logo.png"/>
-<title>Privacy Policy - USA Club Rugby Directory</title>
+<title>Partners - Find Your Rugby Club</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>body { font-family: 'Inter', sans-serif; }</style>
 </head>
-<body class="bg-white text-gray-900">
+<body class="bg-gray-50 text-gray-900">
 
 <div id="drawerOverlay" class="fixed inset-0 z-40 bg-black/50 hidden" onclick="closeDrawer()"></div>
 <div id="mobileDrawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col shadow-2xl transition-transform duration-300 -translate-x-full" style="background:#000e27;">
@@ -24,13 +24,13 @@
     <a href="rankings" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Rankings</a>
     <a href="stats" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Stats</a>
     <a href="events" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Events</a>
-    <a href="partners" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Partners</a>
+    <a href="partners" class="font-bold text-base py-3 border-b" style="border-color:#1a3a6a;color:#b22234;">Partners</a>
     <a href="contact" class="text-white font-bold text-base py-3">Contact</a>
   </nav>
 </div>
 
 <header class="fixed top-0 w-full z-40 flex justify-between items-center px-6 h-16 border-b transition-all duration-200" style="background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-color:#c4c6d0;">
-  <div class="flex items-center gap-6">
+  <div class="flex items-center gap-5">
     <button class="md:hidden flex flex-col gap-1.5 p-1" onclick="openDrawer()" style="background:none;border:none;cursor:pointer;">
       <span class="block w-6 h-0.5" style="background:#000e27;"></span>
       <span class="block w-6 h-0.5" style="background:#000e27;"></span>
@@ -46,7 +46,7 @@
       <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="rankings">Rankings</a>
       <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="stats">Stats</a>
       <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="events">Events</a>
-      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="partners">Partners</a>
+      <a class="text-sm font-semibold transition-colors" style="color:#b22234;" href="partners">Partners</a>
     </nav>
   </div>
   <a href="contact" class="text-sm font-bold px-4 py-2 rounded-full text-white transition-opacity hover:opacity-90" style="background:#b22234;">Contact Us</a>
@@ -55,39 +55,25 @@
 <main class="pt-16">
   <section class="flex flex-col items-center justify-center px-4 py-16 bg-white border-b" style="border-color:#c4c6d0;">
     <div class="max-w-3xl w-full text-center space-y-4">
-      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">Privacy Policy</h1>
-      <p class="text-lg" style="color:#44474f;">Last updated: June 2026</p>
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">Our Partners</h1>
+      <p class="text-lg max-w-xl mx-auto" style="color:#44474f;">The brands and organizations that support American club rugby.</p>
     </div>
   </section>
-  <section class="max-w-3xl mx-auto px-6 py-16 space-y-10">
-    <div class="space-y-3">
-      <h2 class="text-xl font-bold" style="color:#000e27;">Overview</h2>
-      <p class="text-base leading-relaxed" style="color:#44474f;">The USA Club Rugby Directory is an unofficial, fan-made community project. We are committed to being transparent about what information we collect and how we use it. In short: we collect very little, and we don't sell or share anything.</p>
+
+  <div id="loadingState" class="text-center py-20">
+    <div class="w-8 h-8 rounded-full animate-spin mx-auto mb-4" style="border:3px solid #c4c6d0;border-top-color:#b22234;"></div>
+    <p class="text-sm font-medium" style="color:#747780;">Loading...</p>
+  </div>
+
+  <section id="partnersWrap" class="hidden max-w-4xl mx-auto px-4 sm:px-6 py-12">
+    <div id="partnersGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
+    <div id="partnersEmpty" class="hidden text-center py-8">
+      <p class="text-base" style="color:#44474f;">Partner announcements coming soon.</p>
     </div>
-    <div class="space-y-3">
-      <h2 class="text-xl font-bold" style="color:#000e27;">Information We Collect</h2>
-      <p class="text-base leading-relaxed" style="color:#44474f;">This site does not require you to create an account or log in. We do not collect any personally identifiable information from visitors. Club data displayed on the map is sourced from publicly available information and submitted by club representatives.</p>
-    </div>
-    <div class="space-y-3">
-      <h2 class="text-xl font-bold" style="color:#000e27;">Contact Form</h2>
-      <p class="text-base leading-relaxed" style="color:#44474f;">If you submit a message through our Contact page, we collect only the information you provide (your name, email, and message). This is used solely to respond to your inquiry and is not stored beyond that purpose.</p>
-    </div>
-    <div class="space-y-3">
-      <h2 class="text-xl font-bold" style="color:#000e27;">Third-Party Services</h2>
-      <ul class="list-disc list-inside space-y-1 text-base" style="color:#44474f;">
-        <li>Google Sheets - for storing and serving club data</li>
-        <li>Leaflet.js - for map rendering</li>
-        <li>CartoDB - for map tile imagery</li>
-        <li>Google Fonts - for typography</li>
-      </ul>
-    </div>
-    <div class="space-y-3">
-      <h2 class="text-xl font-bold" style="color:#000e27;">Cookies</h2>
-      <p class="text-base leading-relaxed" style="color:#44474f;">This site does not use cookies or any local tracking technologies.</p>
-    </div>
-    <div class="space-y-3">
-      <h2 class="text-xl font-bold" style="color:#000e27;">Changes</h2>
-      <p class="text-base leading-relaxed" style="color:#44474f;">We may update this policy from time to time. Any changes will be reflected on this page with an updated date.</p>
+    <div class="mt-14 rounded-2xl p-8 text-center" style="background:#000e27;">
+      <h2 class="text-xl font-extrabold text-white mb-2">Become a Partner</h2>
+      <p class="text-sm max-w-lg mx-auto mb-5" style="color:#a8b4c8;">Reach thousands of rugby players, coaches, and fans across every state. From kit suppliers to local businesses, we'd love to work with you.</p>
+      <a href="contact" class="inline-block px-6 py-2.5 rounded-full text-sm font-bold text-white transition-opacity hover:opacity-90" style="background:#b22234;">Get in Touch</a>
     </div>
   </section>
 </main>
@@ -100,17 +86,64 @@
         <span class="text-xs" style="color:#747780;">&#169; 2026 Find Your Rugby Club</span>
         <span style="color:#747780;">|</span>
         <nav class="flex gap-4">
-          <a class="text-xs" style="color:#b22234;" href="privacy">Privacy</a>
+          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="privacy">Privacy</a>
           <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="terms">Terms</a>
           <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="contact">Contact</a>
         </nav>
       </div>
-      
     </div>
   </div>
 </footer>
 
 <script>
+const PARTNERS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?gid=PARTNERS_GID_HERE&single=true&output=csv';
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+  return lines.slice(1)
+    .filter(line => line.replace(/,/g, '').trim() !== '')
+    .map(line => {
+      const vals = [];
+      let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"') { inQ = !inQ; }
+        else if (c === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
+        else { cur += c; }
+      }
+      vals.push(cur.trim());
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = (vals[i] || '').replace(/^"|"$/g, '').trim(); });
+      return obj;
+    });
+}
+
+async function loadPartners() {
+  let rows = [];
+  try {
+    const text = await fetch(PARTNERS_CSV_URL).then(r => r.text());
+    rows = parseCSV(text).filter(p => (p.name || '').trim());
+  } catch (e) {}
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('partnersWrap').classList.remove('hidden');
+
+  if (rows.length === 0) {
+    document.getElementById('partnersEmpty').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('partnersGrid').innerHTML = rows.map(p => {
+    const url = p.website ? (/^https?:/.test(p.website) ? p.website : 'https://' + p.website) : '';
+    return `<div class="rounded-2xl border bg-white p-6 flex flex-col items-center text-center gap-3 shadow-sm" style="border-color:#c4c6d0;">
+      ${p.logo ? `<img src="${p.logo}" alt="${p.name}" loading="lazy" style="height:64px;max-width:80%;object-fit:contain;" onerror="this.style.display='none'">` : ''}
+      <div class="font-bold text-lg" style="color:#000e27;">${p.name}</div>
+      ${p.tier ? `<span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full" style="background:rgba(178,34,52,0.1);color:#b22234;">${p.tier}</span>` : ''}
+      ${p.description ? `<p class="text-sm leading-relaxed" style="color:#44474f;">${p.description}</p>` : ''}
+      ${url ? `<a href="${url}" target="_blank" class="mt-1 text-sm font-bold" style="color:#b22234;">Visit Website &rarr;</a>` : ''}
+    </div>`;
+  }).join('');
+}
+
 function openDrawer() {
   document.getElementById('mobileDrawer').classList.remove('-translate-x-full');
   document.getElementById('drawerOverlay').classList.remove('hidden');
@@ -121,7 +154,9 @@ function closeDrawer() {
   document.getElementById('drawerOverlay').classList.add('hidden');
   document.body.style.overflow = '';
 }
+
+loadPartners();
 </script>
-<script data-goatcounter="https://jeffsen98.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script data-goatcounter="https://jeffsen98.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

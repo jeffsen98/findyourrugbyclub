@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link rel="icon" type="image/png" href="fyrc-logo.png"/>
+<title>Events - Find Your Rugby Club</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<div id="drawerOverlay" class="fixed inset-0 z-40 bg-black/50 hidden" onclick="closeDrawer()"></div>
+<div id="mobileDrawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col shadow-2xl transition-transform duration-300 -translate-x-full" style="background:#000e27;">
+  <div class="flex items-center justify-between px-6 h-16 border-b" style="border-color:#1a3a6a;">
+    <a href="/"><img src="fyrc-logo.png" alt="Find Your Rugby Club" class="h-9 w-auto object-contain"/></a>
+    <button onclick="closeDrawer()" class="text-white text-2xl leading-none" style="background:none;border:none;cursor:pointer;">&#x2715;</button>
+  </div>
+  <nav class="flex flex-col px-6 py-8 gap-1">
+    <a href="/" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Home</a>
+    <a href="about" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">About</a>
+    <a href="rankings?view=ladders" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Ladders</a>
+    <a href="rankings" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Rankings</a>
+    <a href="stats" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Stats</a>
+    <a href="events" class="font-bold text-base py-3 border-b" style="border-color:#1a3a6a;color:#b22234;">Events</a>
+    <a href="partners" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Partners</a>
+    <a href="contact" class="text-white font-bold text-base py-3">Contact</a>
+  </nav>
+</div>
+
+<header class="fixed top-0 w-full z-40 flex justify-between items-center px-6 h-16 border-b transition-all duration-200" style="background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-color:#c4c6d0;">
+  <div class="flex items-center gap-5">
+    <button class="md:hidden flex flex-col gap-1.5 p-1" onclick="openDrawer()" style="background:none;border:none;cursor:pointer;">
+      <span class="block w-6 h-0.5" style="background:#000e27;"></span>
+      <span class="block w-6 h-0.5" style="background:#000e27;"></span>
+      <span class="block w-6 h-0.5" style="background:#000e27;"></span>
+    </button>
+    <a href="/" class="flex items-center gap-2.5">
+      <img src="fyrc-logo.png" alt="Find Your Rugby Club" class="h-10 w-auto object-contain"/>
+    </a>
+    <nav class="hidden md:flex items-center gap-5">
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="/">Home</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="about">About</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="rankings?view=ladders">Ladders</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="rankings">Rankings</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="stats">Stats</a>
+      <a class="text-sm font-semibold transition-colors" style="color:#b22234;" href="events">Events</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="partners">Partners</a>
+    </nav>
+  </div>
+  <a href="contact" class="text-sm font-bold px-4 py-2 rounded-full text-white transition-opacity hover:opacity-90" style="background:#b22234;">Contact Us</a>
+</header>
+
+<main class="pt-16">
+  <section class="flex flex-col items-center justify-center px-4 py-16 bg-white border-b" style="border-color:#c4c6d0;">
+    <div class="max-w-3xl w-full text-center space-y-4">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">Rugby Events</h1>
+      <p class="text-lg max-w-xl mx-auto" style="color:#44474f;">Tournaments, 7s series, camps, and community events across the country.</p>
+    </div>
+  </section>
+
+  <div id="loadingState" class="text-center py-20">
+    <div class="w-8 h-8 rounded-full animate-spin mx-auto mb-4" style="border:3px solid #c4c6d0;border-top-color:#b22234;"></div>
+    <p class="text-sm font-medium" style="color:#747780;">Loading events...</p>
+  </div>
+
+  <section id="eventsWrap" class="hidden max-w-3xl mx-auto px-4 sm:px-6 py-12">
+    <h2 id="upcomingHead" class="text-xl font-bold mb-5" style="color:#000e27;">Upcoming</h2>
+    <div id="upcomingList" class="space-y-4"></div>
+    <h2 id="pastHead" class="hidden text-xl font-bold mt-12 mb-5" style="color:#747780;">Past Events</h2>
+    <div id="pastList" class="space-y-4 opacity-70"></div>
+    <p id="eventsEmpty" class="hidden text-sm text-center py-10" style="color:#747780;">No events posted yet - check back soon.</p>
+  </section>
+</main>
+
+<footer class="bg-white border-t py-10 px-8" style="border-color:#c4c6d0;">
+  <div class="max-w-[1440px] mx-auto flex flex-col gap-4">
+    <p class="text-xs text-center" style="color:#a8b4c8;">This is an unofficial, fan-made community directory. Not affiliated with, endorsed by, or sponsored by USA Rugby.</p>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-4">
+        <span class="text-xs" style="color:#747780;">&#169; 2026 Find Your Rugby Club</span>
+        <span style="color:#747780;">|</span>
+        <nav class="flex gap-4">
+          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="privacy">Privacy</a>
+          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="terms">Terms</a>
+          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="contact">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const EVENTS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub?gid=EVENTS_GID_HERE&single=true&output=csv';
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+  return lines.slice(1)
+    .filter(line => line.replace(/,/g, '').trim() !== '')
+    .map(line => {
+      const vals = [];
+      let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"') { inQ = !inQ; }
+        else if (c === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
+        else { cur += c; }
+      }
+      vals.push(cur.trim());
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = (vals[i] || '').replace(/^"|"$/g, '').trim(); });
+      return obj;
+    });
+}
+
+function eventCard(e, past) {
+  const d = new Date(e.date + 'T12:00:00');
+  const dateStr = isNaN(d) ? e.date : d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  return `<div class="rounded-2xl border bg-white p-5 flex gap-4 items-start ${past ? '' : 'shadow-sm'}" style="border-color:#c4c6d0;${past ? '' : 'border-left:4px solid #b22234;'}">
+    <div class="flex flex-col items-center justify-center rounded-xl px-3 py-2 flex-shrink-0" style="background:#000e27;color:#fff;min-width:64px;">
+      <span class="text-[10px] font-bold uppercase tracking-wider" style="color:#a8b4c8;">${isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short' })}</span>
+      <span class="text-xl font-extrabold leading-none">${isNaN(d) ? '?' : d.getDate()}</span>
+    </div>
+    <div class="min-w-0 flex-1">
+      <div class="font-bold text-base" style="color:#000e27;">${e.name || 'Event'}</div>
+      <div class="text-xs mt-0.5" style="color:#747780;">${dateStr}${e.location ? ' &middot; ' + e.location : ''}</div>
+      ${e.description ? `<p class="text-sm mt-2 leading-relaxed" style="color:#44474f;">${e.description}</p>` : ''}
+      ${e.link ? `<a href="${/^https?:/.test(e.link) ? e.link : 'https://' + e.link}" target="_blank" class="inline-block mt-3 px-4 py-1.5 rounded-full text-xs font-bold text-white transition-opacity hover:opacity-90" style="background:#b22234;">Event Details</a>` : ''}
+    </div>
+  </div>`;
+}
+
+async function loadEvents() {
+  let rows = [];
+  try {
+    const text = await fetch(EVENTS_CSV_URL).then(r => r.text());
+    rows = parseCSV(text).filter(e => (e.name || '').trim());
+  } catch (e) {}
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('eventsWrap').classList.remove('hidden');
+
+  if (rows.length === 0) {
+    document.getElementById('upcomingHead').classList.add('hidden');
+    document.getElementById('eventsEmpty').classList.remove('hidden');
+    return;
+  }
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const parsed = rows.map(e => ({ ...e, _d: new Date(e.date + 'T12:00:00') }));
+  const upcoming = parsed.filter(e => isNaN(e._d) || e._d >= today).sort((a, b) => a._d - b._d);
+  const past = parsed.filter(e => !isNaN(e._d) && e._d < today).sort((a, b) => b._d - a._d);
+
+  document.getElementById('upcomingList').innerHTML = upcoming.length
+    ? upcoming.map(e => eventCard(e, false)).join('')
+    : '<p class="text-sm" style="color:#747780;">No upcoming events - check back soon.</p>';
+  if (past.length) {
+    document.getElementById('pastHead').classList.remove('hidden');
+    document.getElementById('pastList').innerHTML = past.map(e => eventCard(e, true)).join('');
+  }
+}
+
+function openDrawer() {
+  document.getElementById('mobileDrawer').classList.remove('-translate-x-full');
+  document.getElementById('drawerOverlay').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('mobileDrawer').classList.add('-translate-x-full');
+  document.getElementById('drawerOverlay').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+loadEvents();
+</script>
+<script data-goatcounter="https://jeffsen98.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

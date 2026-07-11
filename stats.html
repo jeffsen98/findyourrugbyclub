@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link rel="icon" type="image/png" href="fyrc-logo.png"/>
+<title>Stat Leaderboards - Find Your Rugby Club</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .stats-table { width:100%; border-collapse:collapse; }
+  .stats-table th { cursor: pointer; user-select: none; }
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<div id="drawerOverlay" class="fixed inset-0 z-40 bg-black/50 hidden" onclick="closeDrawer()"></div>
+<div id="mobileDrawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col shadow-2xl transition-transform duration-300 -translate-x-full" style="background:#000e27;">
+  <div class="flex items-center justify-between px-6 h-16 border-b" style="border-color:#1a3a6a;">
+    <a href="/"><img src="fyrc-logo.png" alt="Find Your Rugby Club" class="h-9 w-auto object-contain"/></a>
+    <button onclick="closeDrawer()" class="text-white text-2xl leading-none" style="background:none;border:none;cursor:pointer;">&#x2715;</button>
+  </div>
+  <nav class="flex flex-col px-6 py-8 gap-1">
+    <a href="/" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Home</a>
+    <a href="about" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">About</a>
+    <a href="rankings?view=ladders" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Ladders</a>
+    <a href="rankings" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Rankings</a>
+    <a href="stats" class="font-bold text-base py-3 border-b" style="border-color:#1a3a6a;color:#b22234;">Stats</a>
+    <a href="events" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Events</a>
+    <a href="partners" class="text-white font-bold text-base py-3 border-b" style="border-color:#1a3a6a;">Partners</a>
+    <a href="contact" class="text-white font-bold text-base py-3">Contact</a>
+  </nav>
+</div>
+
+<header class="fixed top-0 w-full z-40 flex justify-between items-center px-6 h-16 border-b transition-all duration-200" style="background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-color:#c4c6d0;">
+  <div class="flex items-center gap-5">
+    <button class="md:hidden flex flex-col gap-1.5 p-1" onclick="openDrawer()" style="background:none;border:none;cursor:pointer;">
+      <span class="block w-6 h-0.5" style="background:#000e27;"></span>
+      <span class="block w-6 h-0.5" style="background:#000e27;"></span>
+      <span class="block w-6 h-0.5" style="background:#000e27;"></span>
+    </button>
+    <a href="/" class="flex items-center gap-2.5">
+      <img src="fyrc-logo.png" alt="Find Your Rugby Club" class="h-10 w-auto object-contain"/>
+    </a>
+    <nav class="hidden md:flex items-center gap-5">
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="/">Home</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="about">About</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="rankings?view=ladders">Ladders</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="rankings">Rankings</a>
+      <a class="text-sm font-semibold transition-colors" style="color:#b22234;" href="stats">Stats</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="events">Events</a>
+      <a class="text-sm font-semibold hover:text-red-700 transition-colors" style="color:#44474f;" href="partners">Partners</a>
+    </nav>
+  </div>
+  <a href="contact" class="text-sm font-bold px-4 py-2 rounded-full text-white transition-opacity hover:opacity-90" style="background:#b22234;">Contact Us</a>
+</header>
+
+<main class="pt-16">
+  <section class="flex flex-col items-center justify-center px-4 py-16 bg-white border-b" style="border-color:#c4c6d0;">
+    <div class="max-w-4xl w-full text-center space-y-4">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#000e27;">Stat Leaderboards</h1>
+      <p class="text-lg max-w-xl mx-auto" style="color:#44474f;">Season statistics across every tracked competition. Click a column to sort.</p>
+      <div class="flex justify-center gap-2 sm:gap-3 flex-wrap mt-6">
+        <div class="inline-flex rounded-full p-1" style="background:#eef0f4;border:1px solid #c4c6d0;">
+          <button id="teamStatTab" onclick="switchStat('team')" class="px-4 sm:px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:#b22234;color:#fff;">Team Stats</button>
+          <button id="playerStatTab" onclick="switchStat('player')" class="px-4 sm:px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:transparent;color:#44474f;">Player Stats</button>
+        </div>
+        <div class="inline-flex rounded-full p-1" style="background:#eef0f4;border:1px solid #c4c6d0;">
+          <button id="statMensTab" onclick="switchStatGender('M')" class="px-4 sm:px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:#000e27;color:#fff;">Men's</button>
+          <button id="statWomensTab" onclick="switchStatGender('W')" class="px-4 sm:px-6 py-2 rounded-full text-sm font-bold transition-all" style="background:transparent;color:#44474f;">Women's</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="loadingState" class="text-center py-20">
+    <div class="w-8 h-8 rounded-full animate-spin mx-auto mb-4" style="border:3px solid #c4c6d0;border-top-color:#b22234;"></div>
+    <p class="text-sm font-medium" style="color:#747780;">Loading stats...</p>
+  </div>
+
+  <div id="statsWrap" class="hidden max-w-5xl mx-auto px-2 sm:px-6 py-12">
+    <div class="rounded-2xl overflow-x-auto border bg-white" style="border-color:#c4c6d0;">
+      <table class="stats-table text-xs sm:text-sm">
+        <thead id="statHead"></thead>
+        <tbody id="statBody"></tbody>
+      </table>
+    </div>
+    <p id="statEmpty" class="hidden text-sm text-center py-10" style="color:#747780;"></p>
+    <p class="text-xs text-right mt-3" style="color:#a8b4c8;">Updated from official competition data</p>
+  </div>
+</main>
+
+<footer class="bg-white border-t py-10 px-8" style="border-color:#c4c6d0;">
+  <div class="max-w-[1440px] mx-auto flex flex-col gap-4">
+    <p class="text-xs text-center" style="color:#a8b4c8;">This is an unofficial, fan-made community directory. Not affiliated with, endorsed by, or sponsored by USA Rugby.</p>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-4">
+        <span class="text-xs" style="color:#747780;">&#169; 2026 Find Your Rugby Club</span>
+        <span style="color:#747780;">|</span>
+        <nav class="flex gap-4">
+          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="privacy">Privacy</a>
+          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="terms">Terms</a>
+          <a class="text-xs hover:text-gray-900 transition-colors" style="color:#747780;" href="contact">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSUu5J74G1QqUbH0fDgKBvYj-4CWs51yc0LRaPf-TFTLs9hUrM-h1p6BzcSLKeFSxwtyTG9HpK63y_J/pub';
+const STAT_URLS = {
+  team: SHEET_BASE + '?gid=TEAM_STATS_GID_HERE&single=true&output=csv',
+  player: SHEET_BASE + '?gid=PLAYER_STATS_GID_HERE&single=true&output=csv',
+};
+
+const TEAM_COLS = [
+  { key: 'team', label: 'Team', num: false },
+  { key: 'competition', label: 'Competition', num: false, hideMobile: true },
+  { key: 'gp', label: 'GP', num: true },
+  { key: 'w', label: 'W', num: true },
+  { key: 'l', label: 'L', num: true },
+  { key: 'd', label: 'D', num: true },
+  { key: 'pf', label: 'PF', num: true },
+  { key: 'pa', label: 'PA', num: true },
+  { key: 'pd', label: 'PD', num: true },
+];
+const PLAYER_COLS = [
+  { key: 'player', label: 'Player', num: false },
+  { key: 'team', label: 'Club', num: false },
+  { key: 'tries', label: 'Tries', num: true },
+  { key: 'points', label: 'Points', num: true },
+  { key: 'yellow', label: 'YC', num: true },
+  { key: 'red', label: 'RC', num: true },
+];
+
+let statView = 'team', statGender = 'M';
+let sortKey = 'pd', sortDesc = true;
+const statCache = {};
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+  return lines.slice(1)
+    .filter(line => line.replace(/,/g, '').trim() !== '')
+    .map(line => {
+      const vals = [];
+      let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"') { inQ = !inQ; }
+        else if (c === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
+        else { cur += c; }
+      }
+      vals.push(cur.trim());
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = (vals[i] || '').replace(/^"|"$/g, '').trim(); });
+      return obj;
+    });
+}
+
+async function loadStats() {
+  let rows = statCache[statView];
+  if (!rows) {
+    try {
+      const text = await fetch(STAT_URLS[statView]).then(r => r.text());
+      rows = parseCSV(text);
+      statCache[statView] = rows;
+    } catch (e) { rows = []; }
+  }
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('statsWrap').classList.remove('hidden');
+  render(rows);
+}
+
+function render(rows) {
+  const cols = statView === 'team' ? TEAM_COLS : PLAYER_COLS;
+  const filtered = rows.filter(r => (r.gender || 'M').toUpperCase().startsWith(statGender));
+  filtered.sort((a, b) => {
+    const av = a[sortKey] || '', bv = b[sortKey] || '';
+    const col = cols.find(c => c.key === sortKey);
+    const cmp = (col && col.num) ? (parseFloat(av) || 0) - (parseFloat(bv) || 0) : String(av).localeCompare(String(bv));
+    return sortDesc ? -cmp : cmp;
+  });
+
+  document.getElementById('statHead').innerHTML = `<tr style="background:#000e27;color:#fff;">
+    <th class="px-2 sm:px-3 py-2.5 text-center font-bold text-[10px] sm:text-xs uppercase tracking-wider">#</th>
+    ${cols.map(c => `<th onclick="setSort('${c.key}')" class="px-2 sm:px-3 py-2.5 ${c.num ? 'text-center' : 'text-left'} font-bold text-[10px] sm:text-xs uppercase tracking-wider ${c.hideMobile ? 'hidden sm:table-cell' : ''}">${c.label}${sortKey === c.key ? (sortDesc ? ' &#9660;' : ' &#9650;') : ''}</th>`).join('')}
+  </tr>`;
+
+  const empty = document.getElementById('statEmpty');
+  if (filtered.length === 0) {
+    document.getElementById('statBody').innerHTML = '';
+    empty.textContent = statView === 'player'
+      ? 'No player stats yet - they will appear here as they are recorded.'
+      : 'No team stats available yet.';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  document.getElementById('statBody').innerHTML = filtered.map((r, i) => `
+    <tr style="border-bottom:1px solid #eef0f4;background:${i < 3 ? '#fafbff' : i % 2 === 0 ? '#fff' : '#f9fafb'};">
+      <td class="px-2 sm:px-3 py-2.5 font-bold text-center" style="color:${i < 3 ? '#b22234' : '#747780'};">${i + 1}</td>
+      ${cols.map(c => {
+        const v = r[c.key] || (c.num ? '0' : '-');
+        const pd = c.key === 'pd' ? `color:${parseFloat(v) >= 0 ? '#2e7d52' : '#b22234'};font-weight:700;` : '';
+        return `<td class="px-2 sm:px-3 py-2.5 ${c.num ? 'text-center' : ''} ${c.hideMobile ? 'hidden sm:table-cell' : ''}" style="color:#${c.key === cols[0].key ? '000e27;font-weight:600' : '44474f'};${pd}">${c.key === 'pd' && parseFloat(v) > 0 ? '+' + v : v}</td>`;
+      }).join('')}
+    </tr>`).join('');
+}
+
+function setSort(key) {
+  if (sortKey === key) sortDesc = !sortDesc;
+  else { sortKey = key; sortDesc = true; }
+  render(statCache[statView] || []);
+}
+
+function switchStat(v) {
+  if (v === statView) return;
+  statView = v;
+  sortKey = v === 'team' ? 'pd' : 'points';
+  sortDesc = true;
+  const t = document.getElementById('teamStatTab'), p = document.getElementById('playerStatTab');
+  const on = 'background:#b22234;color:#fff;', off = 'background:transparent;color:#44474f;';
+  t.style.cssText = v === 'team' ? on : off;
+  p.style.cssText = v === 'player' ? on : off;
+  loadStats();
+}
+
+function switchStatGender(g) {
+  if (g === statGender) return;
+  statGender = g;
+  const m = document.getElementById('statMensTab'), w = document.getElementById('statWomensTab');
+  const on = 'background:#000e27;color:#fff;', off = 'background:transparent;color:#44474f;';
+  m.style.cssText = g === 'M' ? on : off;
+  w.style.cssText = g === 'W' ? on : off;
+  render(statCache[statView] || []);
+}
+
+function openDrawer() {
+  document.getElementById('mobileDrawer').classList.remove('-translate-x-full');
+  document.getElementById('drawerOverlay').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('mobileDrawer').classList.add('-translate-x-full');
+  document.getElementById('drawerOverlay').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+loadStats();
+</script>
+<script data-goatcounter="https://jeffsen98.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
