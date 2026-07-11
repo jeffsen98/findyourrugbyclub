@@ -246,7 +246,12 @@ const DIV_STYLE = {
 const DIV_BG = { D1: 'rgba(178,34,52,0.12)', D2: 'rgba(26,79,138,0.12)', D3: 'rgba(193,127,36,0.12)' };
 const DIV_BORDER = { D1: 'rgba(178,34,52,0.4)', D2: 'rgba(26,79,138,0.4)', D3: 'rgba(193,127,36,0.4)' };
 
-const map = L.map('map', { zoomControl: true }).setView([39.5, -98.35], window.innerWidth < 768 ? 2.5 : 4);
+const map = L.map('map', {
+  zoomControl: true,
+  minZoom: window.innerWidth < 768 ? 2.5 : 3.5,
+  maxBounds: [[14, -180], [72, -50]],
+  maxBoundsViscosity: 1.0,
+}).setView([39.5, -98.35], window.innerWidth < 768 ? 2.5 : 4);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
 }).addTo(map);
@@ -405,10 +410,17 @@ function switchSport(sport) {
   loadTeams();
 }
 
-function renderAll() {
-  const filtered = allTeams.filter(t => {
+function milesBetween(a, b) {
+  const R = 3958.8, toRad = x => x * Math.PI / 180;
+  const dLat = toRad(b[0] - a[0]), dLng = toRad(b[1] - a[1]);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a[0])) * Math.cos(toRad(b[0])) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+function renderAll(listOnly) {
+  const q = searchTerm.trim().toLowerCase();
+  let filtered = allTeams.filter(t => {
     const matchDiv = activeDiv === 'all' || getDivisions(t.division).includes(activeDiv.toUpperCase());
-    const q = searchTerm.toLowerCase();
     const tState = (t.state || '').toLowerCase();
     const stateMatch = Object.entries(STATE_NAMES).some(([name, abbr]) =>
       name.includes(q) && abbr.toLowerCase() === tState
@@ -421,12 +433,43 @@ function renderAll() {
     return matchDiv && matchSearch;
   }).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
-  rehomeMap();
+  // nearby recommendations: clubs within 30 miles of the searched place
+  if (q && nearbyCache.query === q && nearbyCache.anchor) {
+    const have = new Set(filtered.map(t => t._id));
+    const recs = [];
+    allTeams.forEach(t => {
+      if (have.has(t._id)) return;
+      if (!(activeDiv === 'all' || getDivisions(t.division).includes(activeDiv.toUpperCase()))) return;
+      const lat = parseFloat(t.lat), lng = parseFloat(t.lng);
+      if (!lat || !lng) return;
+      const mi = milesBetween(nearbyCache.anchor, [lat, lng]);
+      if (mi <= 30) recs.push({ ...t, _miles: Math.max(1, Math.round(mi)) });
+    });
+    recs.sort((a, b) => a._miles - b._miles);
+    filtered = filtered.concat(recs);
+  }
 
-  Object.values(markers).forEach(m => map.removeLayer(m));
-  markers = {};
+  // when zoomed in (and not searching), the directory follows the map frame
+  let inView = false;
+  if (!q && window.innerWidth >= 1024 && map.getZoom() >= 5.5) {
+    const b = map.getBounds();
+    const before = filtered.length;
+    var listFiltered = filtered.filter(t => {
+      const lat = parseFloat(t.lat), lng = parseFloat(t.lng);
+      return lat && lng && b.contains([lat, lng]);
+    });
+    inView = listFiltered.length < before;
+  } else {
+    var listFiltered = filtered;
+  }
 
-  filtered.forEach(t => {
+  if (!listOnly) {
+    rehomeMap();
+
+    Object.values(markers).forEach(m => map.removeLayer(m));
+    markers = {};
+
+    filtered.forEach(t => {
     const lat = parseFloat(t.lat), lng = parseFloat(t.lng);
     if (!lat || !lng) return;
     const m = L.marker([lat, lng], { icon: createMarkerIcon(t.division) }).addTo(map);
@@ -444,17 +487,20 @@ function renderAll() {
     `, { closeButton: false, offset: [0, -8] });
     m.on('click', () => openDetail(t._id));
     markers[t._id] = m;
-  });
+    });
+  }
 
-  document.getElementById('sidebarCount').textContent = `${filtered.length} club${filtered.length !== 1 ? 's' : ''}`;
+  document.getElementById('sidebarCount').textContent =
+    `${listFiltered.length} club${listFiltered.length !== 1 ? 's' : ''}${inView ? ' in view' : ''}`;
 
   const list = document.getElementById('teamList');
-  if (filtered.length === 0) {
-    list.innerHTML = '<div style="text-align:center;color:#747780;padding:2rem;font-size:0.875rem;">No clubs match your search.</div>';
+  if (listFiltered.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:#747780;padding:2rem;font-size:0.875rem;">' +
+      (inView ? 'No clubs in this map area. Zoom out to see more.' : 'No clubs match your search.') + '</div>';
     return;
   }
 
-  list.innerHTML = filtered.map(t => {
+  list.innerHTML = listFiltered.map(t => {
     const isOpen = t._id === activeTeamId;
     const color = COLORS[t.division] || '#888';
     const rows = [
@@ -476,7 +522,7 @@ function renderAll() {
           ? `<img src="${t.logo.replace(/"/g, '&quot;')}" alt="" loading="lazy" style="width:40px;height:40px;object-fit:contain;border-radius:8px;background:#f3f4f6;flex-shrink:0;" onerror="this.style.visibility='hidden'">`
           : divBadgeHtml(t.division)}
         <div style="flex:1;min-width:0;">
-          <div style="font-weight:700;color:#000e27;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.name}</div>
+          <div style="font-weight:700;color:#000e27;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.name}${t._miles ? ` <span style="font-size:0.65rem;font-weight:700;color:#1a4f8a;background:rgba(26,79,138,0.1);padding:1px 7px;border-radius:9999px;vertical-align:middle;">${t._miles} mi away</span>` : ''}</div>
           <div style="font-size:0.75rem;color:#747780;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.city || ''}${t.state ? ', ' + t.state : ''}${t.conference ? ' &middot; ' + t.conference : ''}</div>
         </div>
         <div style="font-size:0.75rem;color:#a8b4c8;flex-shrink:0;margin-top:2px;">${isOpen ? '&#9650;' : '&#9660;'}</div>
@@ -556,10 +602,45 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('mouseout', () => { if (!btn.classList.contains('active')) btn.style.borderColor = '#c4c6d0'; });
 });
 
-let searchTimeout;
+let searchTimeout, geoTimeout;
+const nearbyCache = { query: '', anchor: null };
+const geoResults = {};
+
+function scheduleGeocode(q) {
+  clearTimeout(geoTimeout);
+  nearbyCache.query = q;
+  nearbyCache.anchor = geoResults[q] || null;
+  if (!q || q.length < 3) return;
+  if (q in geoResults) { renderAll(); return; }
+  geoTimeout = setTimeout(async () => {
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q=${encodeURIComponent(q)}`);
+      const d = await res.json();
+      geoResults[q] = d.length ? [parseFloat(d[0].lat), parseFloat(d[0].lon)] : null;
+    } catch (e) {
+      geoResults[q] = null;
+    }
+    if (nearbyCache.query === q) {
+      nearbyCache.anchor = geoResults[q];
+      if (nearbyCache.anchor) renderAll();
+    }
+  }, 500);
+}
+
 document.getElementById('searchInput').addEventListener('input', e => {
   clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => { searchTerm = e.target.value; renderAll(); }, 200);
+  searchTimeout = setTimeout(() => {
+    searchTerm = e.target.value.trim();
+    renderAll();
+    scheduleGeocode(searchTerm.toLowerCase());
+  }, 200);
+});
+
+let moveTimer;
+map.on('moveend', () => {
+  if (window.innerWidth < 1024) return;
+  clearTimeout(moveTimer);
+  moveTimer = setTimeout(() => renderAll(true), 250);
 });
 
 document.getElementById('welcomeOk').addEventListener('click', () => {
