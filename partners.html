@@ -133,18 +133,49 @@ async function loadPartners() {
     return;
   }
   if (rows.length === 1) {
-    document.getElementById('partnersGrid').className = 'grid grid-cols-1 gap-6 max-w-xl mx-auto';
+    document.getElementById('partnersGrid').className = 'grid grid-cols-1 gap-6 max-w-2xl mx-auto';
   }
-  document.getElementById('partnersGrid').innerHTML = rows.map(p => {
+  document.getElementById('partnersGrid').innerHTML = rows.map((p, i) => {
     const url = p.website ? (/^https?:/.test(p.website) ? p.website : 'https://' + p.website) : '';
-    return `<div class="rounded-2xl border bg-white p-6 flex flex-col items-center text-center gap-3 shadow-sm" style="border-color:#c4c6d0;">
-      ${p.logo ? `<img src="${p.logo}" alt="${p.name}" loading="lazy" style="height:64px;max-width:80%;object-fit:contain;" onerror="this.style.display='none'">` : ''}
-      <div class="font-bold text-lg" style="color:#000e27;">${p.name}</div>
-      ${p.tier ? `<span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full" style="background:rgba(178,34,52,0.1);color:#b22234;">${p.tier}</span>` : ''}
-      ${p.description ? `<p class="text-sm leading-relaxed text-left" style="color:#44474f;">${p.description.replace(/\s*\|\s*/g, '<br>')}</p>` : ''}
-      ${url ? `<a href="${url}" target="_blank" class="mt-1 text-sm font-bold" style="color:#b22234;">Visit Website &rarr;</a>` : ''}
+    return `<div class="rounded-2xl border bg-white shadow-sm overflow-hidden" style="border-color:#c4c6d0;">
+      <div class="p-8 flex flex-col items-center text-center gap-4 cursor-pointer" onclick="togglePartner(${i})">
+        ${p.logo ? `<img src="${p.logo}" alt="${p.name}" loading="lazy" style="height:130px;max-width:90%;object-fit:contain;" onerror="this.style.display='none'">` : ''}
+        <div class="font-bold text-2xl" style="color:#000e27;">${p.name}</div>
+        ${p.tier ? `<span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full" style="background:rgba(178,34,52,0.1);color:#b22234;">${p.tier}</span>` : ''}
+        <span class="text-sm font-bold flex items-center gap-1.5" style="color:#b22234;">About our partnership <span id="pArrow${i}" style="display:inline-block;transition:transform 0.2s;font-size:10px;">&#9660;</span></span>
+      </div>
+      <div id="pDetail${i}" class="hidden px-8 pb-8 text-left">
+        <div class="text-sm leading-relaxed space-y-3" style="color:#44474f;">${formatDesc(p.description || '')}</div>
+        ${url ? `<div class="text-center"><a href="${url}" target="_blank" class="inline-block mt-6 px-6 py-2.5 rounded-full text-sm font-bold text-white transition-opacity hover:opacity-90" style="background:#b22234;">Visit Us</a></div>` : ''}
+      </div>
     </div>`;
   }).join('');
+}
+
+// description formatting: "|" separates blocks; "• " lines become list items,
+// lines ending in ":" become bold sub-headings
+function formatDesc(desc) {
+  const parts = desc.split(/\s*\|\s*/).map(s => s.trim()).filter(Boolean);
+  let html = '', inList = false;
+  parts.forEach(p => {
+    if (p.startsWith('•')) {
+      if (!inList) { html += '<ul style="list-style:disc;padding-left:1.25rem;display:flex;flex-direction:column;gap:8px;">'; inList = true; }
+      html += `<li>${p.replace(/^•\s*/, '').replace(/^([^:]{1,40}):/, '<strong style="color:#000e27;">$1:</strong>')}</li>`;
+    } else {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (p.endsWith(':')) html += `<div class="font-bold text-base" style="color:#000e27;">${p}</div>`;
+      else html += `<p>${p}</p>`;
+    }
+  });
+  if (inList) html += '</ul>';
+  return html;
+}
+
+function togglePartner(i) {
+  const d = document.getElementById('pDetail' + i);
+  const a = document.getElementById('pArrow' + i);
+  const open = d.classList.toggle('hidden');
+  if (a) a.style.transform = open ? '' : 'rotate(180deg)';
 }
 
 function openDrawer() {
