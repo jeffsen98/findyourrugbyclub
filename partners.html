@@ -138,13 +138,15 @@ async function loadPartners() {
   document.getElementById('partnersGrid').innerHTML = rows.map((p, i) => {
     const url = p.website ? (/^https?:/.test(p.website) ? p.website : 'https://' + p.website) : '';
     return `<div class="rounded-2xl border bg-white shadow-sm overflow-hidden" style="border-color:#c4c6d0;">
-      <div class="p-8 flex flex-col items-center text-center gap-4 cursor-pointer" onclick="togglePartner(${i})">
-        ${p.logo ? `<img src="${p.logo}" alt="${p.name}" loading="lazy" style="height:130px;max-width:90%;object-fit:contain;" onerror="this.style.display='none'">` : ''}
-        <div class="font-bold text-2xl" style="color:#000e27;">${p.name}</div>
-        ${p.tier ? `<span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full" style="background:rgba(178,34,52,0.1);color:#b22234;">${p.tier}</span>` : ''}
-        <span class="text-sm font-bold flex items-center gap-1.5" style="color:#b22234;">About our partnership <span id="pArrow${i}" style="display:inline-block;transition:transform 0.2s;font-size:10px;">&#9660;</span></span>
+      <div class="p-8 flex flex-col items-center text-center gap-5 cursor-pointer" onclick="togglePartner(${i})">
+        ${p.logo ? `<img src="${p.logo}" alt="${p.name}" loading="lazy" style="height:280px;max-width:100%;object-fit:contain;" onerror="this.style.display='none'">` : `<div class="font-bold text-2xl" style="color:#000e27;">${p.name}</div>`}
+        <span class="text-sm font-bold flex items-center gap-1.5" style="color:#b22234;">See more <span id="pArrow${i}" style="display:inline-block;transition:transform 0.2s;font-size:10px;">&#9660;</span></span>
       </div>
       <div id="pDetail${i}" class="hidden px-8 pb-8 text-left">
+        <div class="flex flex-col items-center gap-2 mb-5 text-center">
+          <div class="font-bold text-2xl" style="color:#000e27;">${p.name}</div>
+          ${p.tier ? `<span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full" style="background:rgba(178,34,52,0.1);color:#b22234;">${p.tier}</span>` : ''}
+        </div>
         <div class="text-sm leading-relaxed space-y-3" style="color:#44474f;">${formatDesc(p.description || '')}</div>
         ${url ? `<div class="text-center"><a href="${url}" target="_blank" class="inline-block mt-6 px-6 py-2.5 rounded-full text-sm font-bold text-white transition-opacity hover:opacity-90" style="background:#b22234;">Visit Us</a></div>` : ''}
       </div>
