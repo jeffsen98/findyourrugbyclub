@@ -132,13 +132,16 @@ async function loadPartners() {
     document.getElementById('partnersEmpty').classList.remove('hidden');
     return;
   }
+  if (rows.length === 1) {
+    document.getElementById('partnersGrid').className = 'grid grid-cols-1 gap-6 max-w-xl mx-auto';
+  }
   document.getElementById('partnersGrid').innerHTML = rows.map(p => {
     const url = p.website ? (/^https?:/.test(p.website) ? p.website : 'https://' + p.website) : '';
     return `<div class="rounded-2xl border bg-white p-6 flex flex-col items-center text-center gap-3 shadow-sm" style="border-color:#c4c6d0;">
       ${p.logo ? `<img src="${p.logo}" alt="${p.name}" loading="lazy" style="height:64px;max-width:80%;object-fit:contain;" onerror="this.style.display='none'">` : ''}
       <div class="font-bold text-lg" style="color:#000e27;">${p.name}</div>
       ${p.tier ? `<span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full" style="background:rgba(178,34,52,0.1);color:#b22234;">${p.tier}</span>` : ''}
-      ${p.description ? `<p class="text-sm leading-relaxed" style="color:#44474f;">${p.description}</p>` : ''}
+      ${p.description ? `<p class="text-sm leading-relaxed text-left" style="color:#44474f;">${p.description.replace(/\s*\|\s*/g, '<br>')}</p>` : ''}
       ${url ? `<a href="${url}" target="_blank" class="mt-1 text-sm font-bold" style="color:#b22234;">Visit Website &rarr;</a>` : ''}
     </div>`;
   }).join('');
